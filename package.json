@@ -1,0 +1,13 @@
+{
+  "name": "vibe-coding-starter",
+  "version": "1.0.0",
+  "description": "GoDaddy PM Vibe Coding Starter Project",
+  "scripts": {
+    "start": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^6.2.0"
+  }
+}
