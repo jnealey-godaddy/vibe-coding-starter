@@ -43,7 +43,7 @@ A dashboard with:
 
 ## Built-in Exercises
 
-The project includes **11 levels** of guided exercises accessible from the exercise panel. Each exercise includes a goal, a suggested AI prompt, the expected outcome, and optional pro tips.
+The project includes **12 levels** of guided exercises accessible from the exercise panel. Each exercise includes a goal, a suggested AI prompt, the expected outcome, and optional pro tips.
 
 | Level | Title | What You'll Practice |
 |-------|-------|---------------------|
@@ -54,10 +54,11 @@ The project includes **11 levels** of guided exercises accessible from the exerc
 | 4 | Add Features | Add columns, row highlighting, and summary cards |
 | 5 | Bug Hunt | Find and fix an intentional bug in the code |
 | 6 | Data Analysis | Add sorting, groupings, and performance badges |
-| 7 | Visualization | Build bar charts and pie charts with pure CSS |
+| 7 | Visualization | Build charts with pure CSS, then create a data-driven presentation |
 | 8 | Build a New View | Create detail panels, comparison mode, or exec summaries |
 | 9 | Prototype Your Own Idea | Apply vibe coding to a real PM workflow problem |
 | 10 | Ship It | Learn git basics -- branches, commits, PRs, and security review |
+| 11 | AI-Powered PM Workflows | Use AI for research, roadmap prioritization, and Jira ticket creation |
 
 ## Tech Stack
 
