@@ -4,58 +4,59 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Site Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,500;12..96,700;12..96,800&family=Red+Hat+Text:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Site Dashboard</h1>
-    <p class="subtitle">Product metrics at a glance</p>
-    <button id="toggle-exercises" class="exercise-toggle">Exercises</button>
+    <div class="header-content">
+      <div class="header-text">
+        <h1>Site Dashboard</h1>
+        <p class="subtitle">Product metrics at a glance</p>
+      </div>
+      <button id="toggle-exercises" class="exercise-toggle">Exercises</button>
+    </div>
   </header>
 
-  <aside id="exercise-panel" class="exercise-panel">
-    <div class="exercise-panel-header">
-      <h2>Vibe Coding Exercises</h2>
-      <p>Use your AI coding tool to complete each challenge. Click a level to expand it.</p>
-      <div id="progress-bar">
-        <div id="progress-fill"></div>
-        <span id="progress-text">0 / 43 completed</span>
-      </div>
-    </div>
-    <div id="exercise-list"></div>
-  </aside>
+  <div class="layout">
+    <main>
+      <section id="summary" class="summary-cards"></section>
+      <section id="controls">
+        <input type="text" id="search" placeholder="Search sites...">
+        <select id="filter-product">
+          <option value="all">All Products</option>
+        </select>
+        <select id="filter-status">
+          <option value="all">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+          <option value="pending">Pending</option>
+        </select>
+      </section>
+      <section id="sites-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Site Name</th>
+              <th>Owner</th>
+              <th>Product</th>
+              <th>Status</th>
+              <th>CSAT</th>
+              <th>Monthly Revenue</th>
+              <th>Created</th>
+            </tr>
+          </thead>
+          <tbody id="sites-body"></tbody>
+        </table>
+      </section>
+    </main>
 
-  <main>
-    <section id="summary" class="summary-cards"></section>
-    <section id="controls">
-      <input type="text" id="search" placeholder="Search sites...">
-      <select id="filter-product">
-        <option value="all">All Products</option>
-      </select>
-      <select id="filter-status">
-        <option value="all">All Statuses</option>
-        <option value="active">Active</option>
-        <option value="inactive">Inactive</option>
-        <option value="pending">Pending</option>
-      </select>
-    </section>
-    <section id="sites-table">
-      <table>
-        <thead>
-          <tr>
-            <th>Site Name</th>
-            <th>Owner</th>
-            <th>Product</th>
-            <th>Status</th>
-            <th>CSAT</th>
-            <th>Monthly Revenue</th>
-            <th>Created</th>
-          </tr>
-        </thead>
-        <tbody id="sites-body"></tbody>
-      </table>
-    </section>
-  </main>
+    <aside id="exercise-panel" class="exercise-panel">
+      <div id="exercise-list"></div>
+    </aside>
+  </div>
 
   <script type="module" src="main.ts"></script>
   <script type="module" src="exercises.ts"></script>

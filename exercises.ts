@@ -240,27 +240,36 @@ function renderExerciseList(expandedLevelId: number | null): void {
   renderProgressBar(progress);
 }
 
-function wrapPanelContent(panel: HTMLElement): void {
+function wrapPanelContent(panel: HTMLElement, toggleFn: () => void): void {
   if (panel.querySelector(".exercise-panel-inner")) return;
+
+  // Remove the old header entirely
+  const oldHeader = panel.querySelector(".exercise-panel-header");
+  if (oldHeader) oldHeader.remove();
 
   const inner = document.createElement("div");
   inner.className = "exercise-panel-inner";
 
-  const scrollArea = document.createElement("div");
-  scrollArea.className = "exercise-panel-scroll";
+  // Compact topbar with title, progress, and close button
+  const topbar = document.createElement("div");
+  topbar.className = "exercise-panel-topbar";
 
-  const panelHeader = panel.querySelector(".exercise-panel-header");
-  const exerciseList = panel.querySelector("#exercise-list");
+  const topbarLeft = document.createElement("div");
+  const h2 = document.createElement("h2");
+  h2.textContent = "Exercises";
 
-  if (panelHeader) inner.appendChild(panelHeader);
-  if (exerciseList) scrollArea.appendChild(exerciseList);
-  inner.appendChild(scrollArea);
-  panel.appendChild(inner);
-}
+  const progressBar = document.createElement("div");
+  progressBar.id = "progress-bar";
+  const progressFill = document.createElement("div");
+  progressFill.id = "progress-fill";
+  progressBar.appendChild(progressFill);
 
-function renderCloseButton(panel: HTMLElement, toggleFn: () => void): void {
-  const panelHeader = panel.querySelector(".exercise-panel-header");
-  if (!panelHeader || panelHeader.querySelector(".panel-close")) return;
+  const progressText = document.createElement("span");
+  progressText.id = "progress-text";
+
+  topbarLeft.appendChild(h2);
+  topbarLeft.appendChild(progressBar);
+  topbarLeft.appendChild(progressText);
 
   const closeBtn = document.createElement("button");
   closeBtn.className = "panel-close";
@@ -268,7 +277,19 @@ function renderCloseButton(panel: HTMLElement, toggleFn: () => void): void {
   closeBtn.title = "Close exercises";
   closeBtn.textContent = "\u00D7";
   closeBtn.addEventListener("click", toggleFn);
-  panelHeader.appendChild(closeBtn);
+
+  topbar.appendChild(topbarLeft);
+  topbar.appendChild(closeBtn);
+
+  const scrollArea = document.createElement("div");
+  scrollArea.className = "exercise-panel-scroll";
+
+  const exerciseList = panel.querySelector("#exercise-list");
+  if (exerciseList) scrollArea.appendChild(exerciseList);
+
+  inner.appendChild(topbar);
+  inner.appendChild(scrollArea);
+  panel.appendChild(inner);
 }
 
 function renderResetLink(scrollArea: HTMLElement): void {
@@ -296,20 +317,20 @@ function init(): void {
   const panel = document.getElementById("exercise-panel");
   if (!toggleBtn || !panel) return;
 
-  // Wrap panel content for push layout
-  wrapPanelContent(panel);
+  // Toggle function shared by button and close icon
+  const togglePanel = (): void => {
+    const isOpen = panel.classList.toggle("open");
+    savePanelOpen(isOpen);
+  };
+
+  // Wrap panel content with compact topbar and close button
+  wrapPanelContent(panel, togglePanel);
 
   const progress = loadProgress();
 
   // Auto-expand first incomplete level, or restore saved state
   const saved = loadExpandedLevel();
   expandedLevel = saved ?? findFirstIncompleteLevel(progress) ?? 1;
-
-  // Toggle function shared by button and close icon
-  const togglePanel = (): void => {
-    const isOpen = panel.classList.toggle("open");
-    savePanelOpen(isOpen);
-  };
 
   // Restore panel state
   if (loadPanelOpen()) {
@@ -318,9 +339,6 @@ function init(): void {
 
   // Toggle panel from header button
   toggleBtn.addEventListener("click", togglePanel);
-
-  // Close button inside panel
-  renderCloseButton(panel, togglePanel);
 
   // Render exercises and reset link
   renderExerciseList(expandedLevel);
