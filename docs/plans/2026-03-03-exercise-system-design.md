@@ -105,7 +105,7 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
 
 4. **Add yourself** (Stretch)
    - Goal: Add a 16th site to sites.json with your own made-up business
-   - Hint: "Add a new site to data/sites.json with id 16, called [your business name], with WordPress as the product, active status, and a CSAT of 6.0"
+   - Hint: "Add a new site to data/sites.json with id 16, called [your business name], with AI Builder as the product, active status, and a CSAT of 6.0"
    - Outcome: The table now shows 16 rows and the Total Sites card says 16
 
 ### Level 3: Read and Understand Data
@@ -113,8 +113,8 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
 
 1. **Which product has the most sites?** (Warm-up)
    - Goal: Ask AI to analyze sites.json and tell you which product type has the most sites
-   - Hint: "Look at data/sites.json and tell me which product type (WordPress, Managed WordPress, Websites + Marketing) has the most sites"
-   - Outcome: AI tells you WordPress has 6 sites, Managed WordPress has 4, Websites + Marketing has 5
+   - Hint: "Look at data/sites.json and tell me which product type (Website Builder, cPanel, AI Builder, Managed Hosting for WordPress) has the most sites"
+   - Outcome: AI tells you Website Builder and AI Builder each have 4, Managed Hosting for WordPress has 4, and cPanel has 3
 
 2. **Who has the worst CSAT?** (Core)
    - Goal: Ask AI which site has the lowest CSAT and why that might matter from a PM perspective
@@ -124,7 +124,7 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
 3. **Revenue breakdown** (Core)
    - Goal: Ask AI to calculate total monthly revenue grouped by product type
    - Hint: "Calculate the total monthly revenue for each product type in sites.json"
-   - Outcome: AI gives you revenue totals per product (WordPress, Managed WordPress, Websites + Marketing)
+   - Outcome: AI gives you revenue totals per product (Website Builder, cPanel, AI Builder, Managed Hosting for WordPress)
 
 4. **Find the Airo users** (Stretch)
    - Goal: Ask AI which sites use the Airo plugin and what patterns you see
@@ -215,8 +215,8 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
 
 2. **Pie chart** (Core)
    - Goal: Add a pie chart showing the product type distribution using CSS
-   - Hint: "Add a pie chart showing what percentage of sites use each product type (WordPress, Managed WordPress, Websites + Marketing). Use a CSS conic-gradient approach -- no library needed"
-   - Outcome: A pie chart appears with 3 segments showing the product mix
+   - Hint: "Add a pie chart showing what percentage of sites use each product type (Website Builder, cPanel, AI Builder, Managed Hosting for WordPress). Use a CSS conic-gradient approach -- no library needed"
+   - Outcome: A pie chart appears with 4 segments showing the product mix
 
 3. **Make it interactive** (Stretch)
    - Goal: Add hover tooltips or click interactions to a chart

@@ -189,6 +189,9 @@ tr:hover {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
 }
 
 .exercise-panel.open {
@@ -207,9 +210,7 @@ tr:hover {
   min-width: 420px;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  position: sticky;
-  top: 0;
+  height: 100%;
 }
 
 .exercise-panel.fullscreen .exercise-panel-inner {
