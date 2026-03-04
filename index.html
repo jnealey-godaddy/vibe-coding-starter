@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Site Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Site Dashboard</h1>
+    <p class="subtitle">Product metrics at a glance</p>
+  </header>
+  <main>
+    <section id="summary" class="summary-cards"></section>
+    <section id="controls">
+      <input type="text" id="search" placeholder="Search sites...">
+      <select id="filter-product">
+        <option value="all">All Products</option>
+      </select>
+      <select id="filter-status">
+        <option value="all">All Statuses</option>
+        <option value="active">Active</option>
+        <option value="inactive">Inactive</option>
+        <option value="pending">Pending</option>
+      </select>
+    </section>
+    <section id="sites-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Site Name</th>
+            <th>Owner</th>
+            <th>Product</th>
+            <th>Status</th>
+            <th>CSAT</th>
+            <th>Monthly Revenue</th>
+            <th>Created</th>
+          </tr>
+        </thead>
+        <tbody id="sites-body"></tbody>
+      </table>
+    </section>
+  </main>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
