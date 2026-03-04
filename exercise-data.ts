@@ -10,89 +10,93 @@ export interface Exercise {
   readonly proTip: string | null;
 }
 
-export interface Level {
+export interface SetupStep {
+  readonly id: string;
+  readonly title: string;
+  readonly instructions: string;
+  readonly verify: string;
+  readonly proTip: string | null;
+}
+
+export interface SetupLevel {
   readonly id: number;
   readonly title: string;
   readonly theme: string;
+  readonly type: "setup";
+  readonly exercises: readonly SetupStep[];
+}
+
+export interface ExerciseLevel {
+  readonly id: number;
+  readonly title: string;
+  readonly theme: string;
+  readonly type: "exercise";
   readonly exercises: readonly Exercise[];
 }
+
+export type Level = SetupLevel | ExerciseLevel;
 
 export const levels: readonly Level[] = [
   {
     id: 0,
     title: "Get Set Up",
     theme: "Install your tools and open your first project",
+    type: "setup",
     exercises: [
       {
         id: "0-1",
-        title: "Install Homebrew",
-        difficulty: "warm-up",
-        goal: "Install the Mac package manager that makes everything else easier.",
-        hint: "Open Terminal (Cmd+Space, type \"Terminal\") and paste: /bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
-        outcome: "Running brew --version in Terminal prints a version number.",
-        proTip: "Windows? Skip Homebrew -- you don't need it. You'll install Git and Node directly in the next steps. Use PowerShell or Windows Terminal instead of Terminal.",
+        title: "Install Cursor",
+        instructions: "Go to cursor.com, download for your operating system, install it, and open it. When prompted, you can sign in or skip for now.",
+        verify: "Cursor opens and you see a welcome screen or an empty editor.",
+        proTip: "Cursor is built on VS Code. It has a built-in AI chat and terminal -- if you get stuck on any of the next steps, open the chat (Cmd+L) and ask for help. If Cursor asks you to choose a plan, the free tier works fine for this workshop.",
       },
       {
         id: "0-2",
-        title: "Install Git",
-        difficulty: "warm-up",
-        goal: "Get Git, the version control tool developers use to track changes.",
-        hint: "Run git --version in Terminal. If it says \"not found,\" run xcode-select --install and follow the prompts, then try again.",
-        outcome: "git --version prints something like \"git version 2.x.x\".",
-        proTip: "Windows? Download Git from git-scm.com. During install, accept the defaults. Then open PowerShell and run git --version to verify.",
+        title: "Install Homebrew",
+        instructions: "Open Cursor's built-in terminal (Ctrl+` or View > Terminal) and copy-paste this command -- do not type it by hand:\n/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"",
+        verify: "Run brew --version -- you should see a version number.",
+        proTip: "This may ask for your Mac password -- that's normal. The install takes a few minutes. Windows? Skip Homebrew -- you don't need it. You'll install Git and Node with separate downloads in the next steps.",
       },
       {
         id: "0-3",
-        title: "Install Node.js",
-        difficulty: "warm-up",
-        goal: "Install Node.js, which this project needs to run its dev server.",
-        hint: "Run brew install node in Terminal, then verify with node --version.",
-        outcome: "node --version prints something like \"v20.x.x\" or higher.",
-        proTip: "Windows? Download Node.js from nodejs.org (pick the LTS version). Run the installer, then open PowerShell and run node --version to verify.",
+        title: "Install Git",
+        instructions: "In Cursor's terminal, run brew install git.",
+        verify: "git --version prints something like \"git version 2.x.x\".",
+        proTip: "Windows? Download Git from git-scm.com and accept the defaults.",
       },
       {
         id: "0-4",
-        title: "Create a GitHub account",
-        difficulty: "warm-up",
-        goal: "Sign up for GitHub, where code projects are stored and shared.",
-        hint: "Go to github.com and sign up (or sign in if you already have an account). Verify your email address.",
-        outcome: "You can visit github.com and see your profile page.",
-        proTip: null,
+        title: "Install Node.js",
+        instructions: "In Cursor's terminal, run brew install node.",
+        verify: "node --version prints something like \"v20.x.x\" or higher.",
+        proTip: "Windows? Download Node.js from nodejs.org (pick the LTS version). Run the installer, then run node --version in the terminal to verify.",
       },
       {
         id: "0-5",
-        title: "Clone this project",
-        difficulty: "core",
-        goal: "Download this starter project to your computer using Git.",
-        hint: "In Terminal, run: git clone [repo-url] vibe-coding-starter then cd vibe-coding-starter. Replace [repo-url] with the URL your facilitator shared.",
-        outcome: "Running ls in the vibe-coding-starter folder shows files like index.html, main.ts, and style.css.",
-        proTip: "\"clone\" means \"download a copy.\" The folder on your computer is now a full copy of the project that you can change without affecting anyone else. Windows? Use PowerShell instead of Terminal. The commands are the same. Use dir instead of ls if ls doesn't work.",
+        title: "Create a GitHub account",
+        instructions: "Go to github.com and sign up (or sign in if you already have an account). Verify your email address.",
+        verify: "You can visit github.com and see your profile page.",
+        proTip: null,
       },
       {
         id: "0-6",
-        title: "Install Cursor",
-        difficulty: "warm-up",
-        goal: "Download and install Cursor, your AI-powered code editor.",
-        hint: "Go to cursor.com, download for your operating system, install it, and open it. When prompted, you can sign in or skip for now.",
-        outcome: "Cursor opens and you see a welcome screen or an empty editor.",
-        proTip: "Cursor is built on VS Code, so if you've used VS Code before, everything will feel familiar.",
+        title: "Clone this project",
+        instructions: "In Cursor's terminal, run:\ngit clone [repo-url] vibe-coding-starter\ncd vibe-coding-starter\nReplace [repo-url] with the URL your facilitator shared.",
+        verify: "Running ls shows files like index.html, main.ts, and style.css.",
+        proTip: "\"clone\" means \"download a copy.\" Your computer now has a full copy you can change without affecting anyone else. Windows? Use dir instead of ls if needed.",
       },
       {
         id: "0-7",
         title: "Open the project in Cursor",
-        difficulty: "core",
-        goal: "Open the starter project folder in Cursor so the AI has full context.",
-        hint: "In Cursor, go to File > Open Folder and select the vibe-coding-starter folder you cloned. You should see the file tree on the left.",
-        outcome: "The left sidebar shows index.html, main.ts, style.css, data/, and other project files.",
+        instructions: "In Cursor, go to File > Open Folder and select the vibe-coding-starter folder you cloned.",
+        verify: "The left sidebar shows index.html, main.ts, style.css, data/, and other project files.",
         proTip: "Opening a folder (not a single file) is key -- it gives the AI context about the entire project, not just one file.",
       },
       {
         id: "0-8",
-        title: "Start the dev server and see the dashboard",
-        difficulty: "core",
-        goal: "Run the project and see it in your browser.",
-        hint: "Open Cursor's built-in terminal (Ctrl+` or View > Terminal), then run npm install followed by npm start. Click the URL that appears (usually http://localhost:5173).",
-        outcome: "Your browser opens a \"Site Dashboard\" page showing summary cards and a table of mock customer sites.",
+        title: "Start the dev server",
+        instructions: "In Cursor's terminal, run:\nnpm install\nnpm start\nClick the URL that appears (usually http://localhost:5173).",
+        verify: "Your browser shows a \"Site Dashboard\" page with summary cards and a table of mock customer sites.",
         proTip: "The dev server watches for changes -- when you edit a file and save, the browser updates automatically. This is the magic of vibe coding: change, save, see.",
       },
     ],
@@ -101,6 +105,7 @@ export const levels: readonly Level[] = [
     id: 1,
     title: "Explore and Orient",
     theme: "Learn to ask your AI tool questions about code",
+    type: "exercise",
     exercises: [
       {
         id: "1-1",
@@ -115,9 +120,9 @@ export const levels: readonly Level[] = [
         id: "1-2",
         title: "Explain a function",
         difficulty: "core",
-        goal: "Ask AI to explain the calculateStats function in main.ts in plain English.",
-        hint: "Explain what the calculateStats function in main.ts does, step by step, in non-technical language.",
-        outcome: "AI breaks down that it counts total sites, counts active sites, sums up revenue, and averages CSAT scores.",
+        goal: "Ask AI to explain the renderTable function in main.ts in plain English.",
+        hint: "Explain what the renderTable function in main.ts does, step by step, in non-technical language.",
+        outcome: "AI breaks down that it takes filtered site data, creates a table row for each site, fills in columns like name, owner, product, status, CSAT, revenue, and created date, then replaces the table contents.",
         proTip: null,
       },
       {
@@ -135,7 +140,7 @@ export const levels: readonly Level[] = [
         difficulty: "stretch",
         goal: "Ask AI what would happen if you deleted the applyFilters() call near the bottom of main.ts.",
         hint: "What would happen if I removed the applyFilters() call near the bottom of main.ts?",
-        outcome: "AI explains the page would load with an empty table and empty summary cards because nothing triggers the initial render.",
+        outcome: "AI explains the page would load with an empty table and empty summary cards because nothing triggers the initial render. The search and filter controls would still work if you interacted with them -- but you'd see nothing until you did.",
         proTip: null,
       },
       {
@@ -162,14 +167,15 @@ export const levels: readonly Level[] = [
     id: 2,
     title: "First Changes",
     theme: "Make your first visible modifications",
+    type: "exercise",
     exercises: [
       {
         id: "2-1",
-        title: "Change the page title",
+        title: "Change the header text",
         difficulty: "warm-up",
         goal: "Update the header text from \"Site Dashboard\" to something of your own.",
         hint: "Change the h1 heading in index.html from 'Site Dashboard' to 'My Product Dashboard'.",
-        outcome: "The header in your browser shows your new title.",
+        outcome: "The large header text in your browser shows your new title. You can also update the <title> tag in the <head> to change what shows in the browser tab.",
         proTip: null,
       },
       {
@@ -179,15 +185,15 @@ export const levels: readonly Level[] = [
         goal: "Swap the dark header background to a color you like.",
         hint: "Change the header background color in style.css from black (#111) to dark blue.",
         outcome: "The header bar in your browser is now the color you chose.",
-        proTip: null,
+        proTip: "If you pick a light color, the white text may become invisible. Ask AI to also update the text color if needed.",
       },
       {
         id: "2-3",
         title: "Edit a site name",
         difficulty: "core",
         goal: "Change \"Bella's Bakery\" to a business name you make up in sites.json.",
-        hint: "In data/sites.json, change the name of the first site from 'Bella's Bakery' to 'Nealey's Taco Shop'.",
-        outcome: "The first row in the table shows your new business name.",
+        hint: "In data/sites.json, change the name of the first site from \"Bella's Bakery\" to any business name you like.",
+        outcome: "The first row in the table shows your new business name. If the table disappears after saving, you may have accidentally broken the JSON formatting -- ask AI to check if your sites.json is valid.",
         proTip: null,
       },
       {
@@ -195,8 +201,8 @@ export const levels: readonly Level[] = [
         title: "Add yourself",
         difficulty: "stretch",
         goal: "Add a 16th site to sites.json with your own made-up business.",
-        hint: "Add a new site to data/sites.json with id 16, called [your business name], with WordPress as the product (valid products: WordPress, Managed WordPress, Websites + Marketing), active status, and a CSAT of 6.0. Include all the same fields as the other sites.",
-        outcome: "The table now shows 16 rows and the Total Sites card says 16.",
+        hint: "Add a new site to data/sites.json. Use this as a template and fill in your own values:\n{\"id\": 16, \"name\": \"Your Business\", \"owner\": \"Your Name\", \"product\": \"WordPress\", \"plan\": \"Basic\", \"status\": \"active\", \"csat\": 6.0, \"monthlyRevenue\": 29.99, \"domain\": \"yourbusiness.com\", \"created\": \"2026-03-03\", \"plugins\": [], \"pageViews\": 5000, \"region\": \"US-West\"}\nValid products: WordPress, Managed WordPress, Websites + Marketing. Valid plans: Basic, Standard, Premium, Pro, Ultimate, Ecommerce. Valid regions: US-West, US-East, US-Central, EU.",
+        outcome: "The table now shows 16 rows and the Total Sites card says 16. If the table disappears, ask AI: \"Is my sites.json valid JSON?\"",
         proTip: null,
       },
     ],
@@ -205,6 +211,7 @@ export const levels: readonly Level[] = [
     id: 3,
     title: "Read and Understand Data",
     theme: "Use AI to answer PM-relevant questions from the data",
+    type: "exercise",
     exercises: [
       {
         id: "3-1",
@@ -221,7 +228,7 @@ export const levels: readonly Level[] = [
         difficulty: "core",
         goal: "Ask AI which site has the lowest CSAT and why that might matter from a PM perspective.",
         hint: "Which site in sites.json has the lowest CSAT score? What might that tell a product manager?",
-        outcome: "AI identifies Paws & Play Pet Care (3.2) and may note it's also inactive -- low satisfaction may have led to churn.",
+        outcome: "AI identifies Paws & Play Pet Care (3.2) and may note it's also inactive -- low satisfaction may have led to churn. Green Valley Farm (3.8) is also inactive with low CSAT, reinforcing the pattern.",
         proTip: null,
       },
       {
@@ -230,7 +237,7 @@ export const levels: readonly Level[] = [
         difficulty: "core",
         goal: "Ask AI to calculate total monthly revenue grouped by product type.",
         hint: "Calculate the total monthly revenue for each product type in sites.json.",
-        outcome: "AI gives you revenue totals per product (WordPress, Managed WordPress, Websites + Marketing).",
+        outcome: "AI gives you revenue totals: WordPress ~$155.95, Managed WordPress ~$199.96, Websites + Marketing ~$64.97. Notice that Managed WordPress generates the most revenue despite having fewer sites.",
         proTip: null,
       },
       {
@@ -239,7 +246,7 @@ export const levels: readonly Level[] = [
         difficulty: "stretch",
         goal: "Ask AI which sites use the AI Builder plugin and what patterns you see.",
         hint: "Which sites in sites.json have 'AI Builder' in their plugins list? What do they have in common?",
-        outcome: "AI identifies the AI Builder users and may note they tend to have higher CSAT scores and revenue.",
+        outcome: "AI identifies 8 sites with AI Builder (more than half the portfolio). They tend to have higher CSAT (~6.2 avg vs ~4.4 for non-users) and higher revenue (~$43 avg vs ~$11). Note that non-users include inactive sites, which skews the comparison.",
         proTip: "This is the kind of question PMs can ask AI about real product data -- finding patterns without writing SQL.",
       },
     ],
@@ -248,6 +255,7 @@ export const levels: readonly Level[] = [
     id: 4,
     title: "Add Features",
     theme: "Extend the dashboard with new functionality",
+    type: "exercise",
     exercises: [
       {
         id: "4-1",
@@ -274,7 +282,7 @@ export const levels: readonly Level[] = [
         goal: "Make rows with CSAT below 4.0 stand out visually.",
         hint: "Highlight table rows in light red where the CSAT score is below 4.0.",
         outcome: "Paws & Play (3.2) and Green Valley Farm (3.8) rows are highlighted.",
-        proTip: null,
+        proTip: "One site (The Vinyl Lounge) has no CSAT score at all -- make sure your highlighting skips sites with missing data.",
       },
       {
         id: "4-4",
@@ -291,6 +299,7 @@ export const levels: readonly Level[] = [
     id: 5,
     title: "Bug Hunt",
     theme: "Find and fix a real bug hidden in the code",
+    type: "exercise",
     exercises: [
       {
         id: "5-1",
@@ -334,13 +343,14 @@ export const levels: readonly Level[] = [
     id: 6,
     title: "Data Analysis",
     theme: "Turn raw data into actionable insights",
+    type: "exercise",
     exercises: [
       {
         id: "6-1",
         title: "Sort the table",
         difficulty: "core",
         goal: "Make table column headers clickable to sort ascending/descending.",
-        hint: "Make the table headers clickable so clicking a column sorts the table by that column. Clicking again should reverse the sort order.",
+        hint: "Make the table headers clickable so clicking a column sorts the table by that column. Clicking again should reverse the sort order. You'll need to modify both index.html and main.ts.",
         outcome: "Clicking \"CSAT\" sorts sites by CSAT score, clicking again reverses the order.",
         proTip: null,
       },
@@ -358,7 +368,7 @@ export const levels: readonly Level[] = [
         title: "CSAT distribution",
         difficulty: "core",
         goal: "Show how many sites fall into each CSAT bucket (good/ok/bad).",
-        hint: "Add a visual showing how many sites have good CSAT (5.5+), ok CSAT (4.0-5.4), and bad CSAT (below 4.0).",
+        hint: "Add a visual showing how many sites have good CSAT (5.5+), ok CSAT (4.0-5.4), and bad CSAT (below 4.0). Exclude any sites with no CSAT score.",
         outcome: "A breakdown showing the count per bucket (e.g., 8 good, 4 ok, 2 bad). Note: one site has no CSAT rating and should be excluded.",
         proTip: null,
       },
@@ -377,14 +387,15 @@ export const levels: readonly Level[] = [
     id: 7,
     title: "Visualization",
     theme: "Add charts and visual data stories",
+    type: "exercise",
     exercises: [
       {
         id: "7-1",
         title: "Bar chart",
         difficulty: "core",
         goal: "Add a bar chart showing CSAT scores by site using pure HTML/CSS.",
-        hint: "Add a horizontal bar chart below the table showing CSAT scores for each site. Use colored div elements with widths based on the CSAT score -- no charting library needed.",
-        outcome: "A bar chart appears with each site's CSAT score visualized as colored bars.",
+        hint: "Add a horizontal bar chart below the table showing CSAT scores for each site. Generate the bars from the site data in main.ts using colored div elements with widths based on the CSAT score -- no charting library needed.",
+        outcome: "A bar chart appears with each site's CSAT score visualized as colored bars, generated from the live data.",
         proTip: null,
       },
       {
@@ -400,9 +411,9 @@ export const levels: readonly Level[] = [
         id: "7-3",
         title: "Make it interactive",
         difficulty: "stretch",
-        goal: "Add hover tooltips or click interactions to a chart. (Complete the bar chart exercise first.)",
-        hint: "Make the bar chart from Exercise 7-1 interactive -- show the exact CSAT score and site name when you hover over a bar. Use CSS :hover and a tooltip element.",
-        outcome: "Hovering over chart elements reveals details.",
+        goal: "Add hover tooltips or click interactions to a chart. You need to complete the bar chart exercise (7-1) first.",
+        hint: "Make the bar chart from Exercise 7-1 interactive -- show the exact CSAT score and site name when you hover over a bar. You can use JavaScript to show/hide a tooltip on hover, or use CSS :hover with a hidden element.",
+        outcome: "Hovering over chart bars reveals the site name and exact CSAT score.",
         proTip: "For production dashboards you'd use Chart.js or D3 -- but pure CSS charts are great for quick prototypes and keep this project dependency-free.",
       },
     ],
@@ -411,14 +422,15 @@ export const levels: readonly Level[] = [
     id: 8,
     title: "Build a New View",
     theme: "Create something that doesn't exist yet",
+    type: "exercise",
     exercises: [
       {
         id: "8-1",
         title: "Site detail panel",
-        difficulty: "core",
+        difficulty: "stretch",
         goal: "When you click a site name in the table, show a detail panel with all of that site's information.",
-        hint: "When I click a site name in the table, show an overlay or detail panel in the main content area with all details for that site including plugins, page views, and region.",
-        outcome: "Clicking a site name opens a detail view showing fields not in the table.",
+        hint: "When I click a site name in the table, show a detail panel inside the main content area (not as a right-side panel -- the exercise panel is already there) with all details for that site including plan, plugins, page views, and region. Include a close button to dismiss it.",
+        outcome: "Clicking a site name opens a detail view showing fields not in the table. Clicking the close button (or clicking a different site) dismisses it.",
         proTip: null,
       },
       {
@@ -426,7 +438,7 @@ export const levels: readonly Level[] = [
         title: "Comparison mode",
         difficulty: "stretch",
         goal: "Let users select two sites and see a side-by-side comparison.",
-        hint: "Add checkboxes to each row and a 'Compare' button. Limit selection to two sites at a time, then show a side-by-side comparison of the selected sites.",
+        hint: "Add checkboxes to each row and a 'Compare' button above the table next to the filters. Limit selection to two sites at a time, then show a side-by-side comparison below the table showing all fields including plan, plugins, page views, and region.",
         outcome: "Selecting two sites and clicking Compare shows their stats side-by-side.",
         proTip: null,
       },
@@ -435,7 +447,7 @@ export const levels: readonly Level[] = [
         title: "Executive summary view",
         difficulty: "stretch",
         goal: "Add a toggleable executive summary view within the existing page.",
-        hint: "Add a 'Summary View' toggle button in the header. When clicked, hide the table and show an executive overview section with total sites, total revenue, average CSAT, and top/bottom performers. Clicking 'Table View' switches back.",
+        hint: "Add a 'Summary View' toggle button in the header. When clicked, hide the table and show an executive overview section with total sites, total revenue, average CSAT, and top/bottom performers by CSAT score. Clicking 'Table View' switches back.",
         outcome: "A toggle switches between the detailed table and a high-level executive view, all within the same page.",
         proTip: null,
       },
@@ -443,8 +455,8 @@ export const levels: readonly Level[] = [
         id: "8-4",
         title: "Build from a screenshot",
         difficulty: "stretch",
-        goal: "Take a screenshot of any UI you like (a competitor's dashboard, a Figma mock, a sketch on paper) and use it as an AI input to generate code. Requires an AI tool that supports image uploads (Claude, ChatGPT, or Gemini).",
-        hint: "Take a screenshot and paste it into your AI chat (Claude, ChatGPT, or Gemini all support image uploads). Then say: \"Build me a component that looks like this screenshot. Use the same layout and visual style but populate it with data from sites.json.\"",
+        goal: "Take a screenshot of any UI you like (a competitor's dashboard, a Figma mock, a sketch on paper) and use it as an AI input to generate code.",
+        hint: "Cursor supports image paste in the chat window (Cmd+L) -- try dragging a screenshot into it. If that doesn't work, open claude.ai or chatgpt.com in your browser (free accounts work). Say: \"Build me a component that looks like this screenshot. Use the same layout and visual style but populate it with data from sites.json.\" If you used an external tool, paste the generated code back into Cursor and ask it to integrate it into your project.",
         outcome: "AI generates a new section or component that visually matches your reference image, wired to real data.",
         proTip: "This is one of the highest-leverage PM workflows -- go from a whiteboard sketch or Figma mock to a working prototype in minutes. Some PMs use this to estimate LOE by asking \"how complex would this be to build?\" after the AI generates the code.",
       },
@@ -454,6 +466,7 @@ export const levels: readonly Level[] = [
     id: 9,
     title: "Prototype Your Own Idea",
     theme: "Apply vibe coding to your actual PM work",
+    type: "exercise",
     exercises: [
       {
         id: "9-1",
@@ -497,6 +510,7 @@ export const levels: readonly Level[] = [
     id: 10,
     title: "Ship It",
     theme: "Learn the basics of version control",
+    type: "exercise",
     exercises: [
       {
         id: "10-1",
@@ -514,16 +528,16 @@ export const levels: readonly Level[] = [
         goal: "Ask AI to create a new branch for your changes.",
         hint: "Create a new git branch called 'my-dashboard-changes', switch to it, and explain why branches are useful.",
         outcome: "You're on a new branch with your changes, and you understand that branches let you experiment without affecting the original code.",
-        proTip: null,
+        proTip: "Think of a branch as a parallel copy of your project. You can experiment freely on a branch, and the original code stays untouched on the main branch.",
       },
       {
         id: "10-3",
         title: "Write a commit message",
         difficulty: "core",
         goal: "Ask AI to help you stage and commit your work with a clear message.",
-        hint: "Help me commit my changes with a clear commit message that describes what I changed and why.",
-        outcome: "Your changes are committed with a descriptive message.",
-        proTip: null,
+        hint: "Show me how to stage my changed files with git add and then commit them with a clear message that describes what I changed and why.",
+        outcome: "AI walks you through staging files (git add) and committing (git commit). Your changes are committed with a descriptive message.",
+        proTip: "Staging is like packing a box before shipping it. You pick which changes go into this commit with git add, then seal it with git commit.",
       },
       {
         id: "10-4",
@@ -540,7 +554,7 @@ export const levels: readonly Level[] = [
         difficulty: "stretch",
         goal: "Ask AI to review your code for security issues, focusing on hardcoded values and exposed data.",
         hint: "Review my project for security risks. Are there any API keys, passwords, or sensitive data hardcoded in the source files? What should I never commit to git?",
-        outcome: "AI finds the hardcoded demo API key in main.ts and explains why it should be moved to an environment variable. It also notes that .env files should be in .gitignore.",
+        outcome: "AI finds the hardcoded demo API key in main.ts and explains why it should be moved to an environment variable. It may also flag that .env is not in .gitignore -- meaning if you created a .env file, it could accidentally get committed.",
         proTip: "Nearly half of AI-generated code contains security flaws. The most common mistake is hardcoding credentials. When you build real prototypes that connect to APIs, always ask AI: \"Is anything sensitive exposed in this code?\"",
       },
       {
