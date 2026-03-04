@@ -18,11 +18,11 @@ h1, h2 {
 header {
   background: #111;
   color: #fff;
-  padding: 24px 32px;
+  padding: 10px 24px;
 }
 
 header h1 {
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 700;
 }
 
@@ -32,15 +32,20 @@ header h1 {
   align-items: center;
 }
 
+.header-text {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .subtitle {
-  color: #999;
-  font-size: 14px;
-  margin-top: 4px;
+  color: #777;
+  font-size: 13px;
 }
 
 .layout {
   display: flex;
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - 42px);
 }
 
 main {
@@ -162,9 +167,9 @@ tr:hover {
   background: #0073ec;
   color: #fff;
   border: none;
-  padding: 8px 20px;
-  border-radius: 6px;
-  font-size: 14px;
+  padding: 5px 14px;
+  border-radius: 5px;
+  font-size: 13px;
   font-weight: 600;
   font-family: "Bricolage Grotesque", -apple-system, sans-serif;
   cursor: pointer;
