@@ -21,6 +21,13 @@ interface SiteStats {
   avgCsat: number;
 }
 
+// Analytics tracking for dashboard usage
+const ANALYTICS_API_KEY = "sk_live_a1b2c3d4e5f6g7h8i9j0";
+
+function trackPageView(page: string) {
+  fetch(`https://api.example.com/track?key=${ANALYTICS_API_KEY}&page=${page}`);
+}
+
 import sitesData from "./data/sites.json";
 const sites: Site[] = sitesData as Site[];
 
@@ -30,7 +37,6 @@ function calculateStats(filteredSites: Site[]): SiteStats {
   const activeSites = filteredSites.filter((s) => s.status === "active").length;
 
   let totalRevenue = 0;
-  // INTENTIONAL BUG for exercise 5-2: should be filteredSites.length (not -1)
   for (let i = 0; i < filteredSites.length - 1; i++) {
     totalRevenue += filteredSites[i].monthlyRevenue;
   }
@@ -226,6 +232,7 @@ function debounce(fn: () => void, ms: number): () => void {
 // Initialize
 populateProductFilter();
 applyFilters();
+trackPageView("dashboard");
 
 // Event listeners
 document.getElementById("search")?.addEventListener("input", debounce(applyFilters, 180));
