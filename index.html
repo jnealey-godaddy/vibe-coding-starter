@@ -10,7 +10,21 @@
   <header>
     <h1>Site Dashboard</h1>
     <p class="subtitle">Product metrics at a glance</p>
+    <button id="toggle-exercises" class="exercise-toggle">Exercises</button>
   </header>
+
+  <aside id="exercise-panel" class="exercise-panel">
+    <div class="exercise-panel-header">
+      <h2>Vibe Coding Exercises</h2>
+      <p>Use your AI coding tool (Claude Code, Cursor, or ChatGPT) to complete each challenge. Click an exercise to expand it.</p>
+      <div id="progress-bar">
+        <div id="progress-fill"></div>
+        <span id="progress-text">0 / 6 completed</span>
+      </div>
+    </div>
+    <div id="exercise-list"></div>
+  </aside>
+
   <main>
     <section id="summary" class="summary-cards"></section>
     <section id="controls">
@@ -42,6 +56,8 @@
       </table>
     </section>
   </main>
-  <script type="module" src="main.js"></script>
+
+  <script type="module" src="main.ts"></script>
+  <script type="module" src="exercises.ts"></script>
 </body>
 </html>

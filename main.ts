@@ -1,7 +1,24 @@
-import sites from "./data/sites.json";
+interface Site {
+  id: number;
+  name: string;
+  owner: string;
+  product: string;
+  plan: string;
+  status: "active" | "inactive" | "pending";
+  csat: number | null;
+  monthlyRevenue: number;
+  domain: string;
+  created: string;
+  plugins: string[];
+  pageViews: number;
+  region: string;
+}
+
+import sitesData from "./data/sites.json";
+const sites: Site[] = sitesData as Site[];
 
 // Render summary cards
-function calculateStats(filteredSites) {
+function calculateStats(filteredSites: Site[]) {
   const totalSites = filteredSites.length;
   const activeSites = filteredSites.filter((s) => s.status === "active").length;
 
@@ -13,14 +30,15 @@ function calculateStats(filteredSites) {
   const ratedSites = filteredSites.filter((s) => s.csat !== null);
   const avgCsat =
     ratedSites.length > 0
-      ? ratedSites.reduce((sum, s) => sum + s.csat, 0) / ratedSites.length
+      ? ratedSites.reduce((sum, s) => sum + (s.csat as number), 0) / ratedSites.length
       : 0;
 
   return { totalSites, activeSites, totalRevenue, avgCsat };
 }
 
-function renderSummary(stats) {
+function renderSummary(stats: ReturnType<typeof calculateStats>) {
   const container = document.getElementById("summary");
+  if (!container) return;
   container.innerHTML = `
     <div class="card">
       <div class="label">Total Sites</div>
@@ -42,8 +60,9 @@ function renderSummary(stats) {
 }
 
 // Render table rows
-function renderTable(filteredSites) {
+function renderTable(filteredSites: Site[]) {
   const tbody = document.getElementById("sites-body");
+  if (!tbody) return;
   tbody.innerHTML = filteredSites
     .map(
       (site) => `
@@ -61,7 +80,7 @@ function renderTable(filteredSites) {
     .join("");
 }
 
-function getCsatClass(csat) {
+function getCsatClass(csat: number | null): string {
   if (csat === null) return "";
   if (csat >= 5.5) return "csat-good";
   if (csat >= 4.0) return "csat-ok";
@@ -71,6 +90,7 @@ function getCsatClass(csat) {
 // Populate product filter dropdown
 function populateProductFilter() {
   const select = document.getElementById("filter-product");
+  if (!select) return;
   const products = [...new Set(sites.map((s) => s.product))].sort();
   products.forEach((product) => {
     const option = document.createElement("option");
@@ -82,9 +102,13 @@ function populateProductFilter() {
 
 // Filter and re-render
 function applyFilters() {
-  const searchTerm = document.getElementById("search").value.toLowerCase();
-  const productFilter = document.getElementById("filter-product").value;
-  const statusFilter = document.getElementById("filter-status").value;
+  const searchInput = document.getElementById("search") as HTMLInputElement | null;
+  const productSelect = document.getElementById("filter-product") as HTMLSelectElement | null;
+  const statusSelect = document.getElementById("filter-status") as HTMLSelectElement | null;
+
+  const searchTerm = searchInput?.value.toLowerCase() ?? "";
+  const productFilter = productSelect?.value ?? "all";
+  const statusFilter = statusSelect?.value ?? "all";
 
   let filtered = sites;
 
@@ -115,6 +139,6 @@ populateProductFilter();
 applyFilters();
 
 // Event listeners
-document.getElementById("search").addEventListener("input", applyFilters);
-document.getElementById("filter-product").addEventListener("change", applyFilters);
-document.getElementById("filter-status").addEventListener("change", applyFilters);
+document.getElementById("search")?.addEventListener("input", applyFilters);
+document.getElementById("filter-product")?.addEventListener("change", applyFilters);
+document.getElementById("filter-status")?.addEventListener("change", applyFilters);
