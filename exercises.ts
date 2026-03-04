@@ -132,14 +132,14 @@ function createExerciseCard(exercise: Exercise, progress: ProgressMap): HTMLElem
   copyBtn.className = "copy-hint";
   copyBtn.type = "button";
   copyBtn.title = "Copy prompt";
-  copyBtn.textContent = "\u2398";
+  copyBtn.textContent = "\u{1F4CB}";
   copyBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     navigator.clipboard.writeText(exercise.hint).then(() => {
       copyBtn.textContent = "\u2713";
       copyBtn.classList.add("copied");
       setTimeout(() => {
-        copyBtn.textContent = "\u2398";
+        copyBtn.textContent = "\u{1F4CB}";
         copyBtn.classList.remove("copied");
       }, 1500);
     });
