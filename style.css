@@ -5,10 +5,14 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: "Red Hat Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: #f5f7fa;
   color: #333;
   line-height: 1.6;
+}
+
+h1, h2 {
+  font-family: "Bricolage Grotesque", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 header {
@@ -19,7 +23,13 @@ header {
 
 header h1 {
   font-size: 24px;
-  font-weight: 600;
+  font-weight: 700;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .subtitle {
@@ -28,10 +38,16 @@ header h1 {
   margin-top: 4px;
 }
 
+.layout {
+  display: flex;
+  min-height: calc(100vh - 80px);
+}
+
 main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  flex: 1;
+  min-width: 0;
+  padding: 24px 32px;
+  transition: flex 0.3s ease;
 }
 
 .summary-cards {
@@ -143,9 +159,6 @@ tr:hover {
 /* --- Exercise Panel --- */
 
 .exercise-toggle {
-  position: absolute;
-  top: 24px;
-  right: 32px;
   background: #0073ec;
   color: #fff;
   border: none;
@@ -153,70 +166,97 @@ tr:hover {
   border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
+  font-family: "Bricolage Grotesque", -apple-system, sans-serif;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .exercise-toggle:hover {
   background: #005bb5;
 }
 
-header {
-  position: relative;
-}
-
 .exercise-panel {
-  position: fixed;
-  top: 0;
-  right: -420px;
-  width: 400px;
-  height: 100vh;
+  width: 0;
+  overflow: hidden;
   background: #fff;
-  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.15);
-  z-index: 100;
-  overflow-y: auto;
-  transition: right 0.3s ease;
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.08);
+  transition: width 0.3s ease;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
 }
 
 .exercise-panel.open {
-  right: 0;
+  width: 420px;
+}
+
+.exercise-panel-inner {
+  min-width: 420px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
 }
 
 .exercise-panel-header {
   background: #111;
   color: #fff;
-  padding: 20px;
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  padding: 24px 24px 20px;
+  position: relative;
 }
 
 .exercise-panel-header h2 {
-  font-size: 18px;
-  margin-bottom: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding-right: 32px;
 }
 
 .exercise-panel-header p {
   font-size: 13px;
   color: #aaa;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.panel-close {
+  position: absolute;
+  top: 20px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 22px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.panel-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 #progress-bar {
   background: #333;
-  border-radius: 8px;
-  height: 28px;
+  border-radius: 16px;
+  height: 32px;
   position: relative;
   overflow: hidden;
 }
 
 #progress-fill {
-  background: #00a63f;
+  background: linear-gradient(90deg, #00a63f, #00c950);
   height: 100%;
   width: 0;
   transition: width 0.4s ease;
-  border-radius: 8px;
+  border-radius: 16px;
 }
 
 #progress-text {
@@ -227,9 +267,15 @@ header {
   font-size: 12px;
   font-weight: 600;
   color: #fff;
+  white-space: nowrap;
 }
 
 /* Level accordion */
+
+.exercise-panel-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
 
 .level-section {
   border-bottom: 1px solid #eee;
@@ -240,36 +286,38 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 16px;
+  padding: 16px 20px;
   background: none;
   border: none;
   cursor: pointer;
   text-align: left;
   font-family: inherit;
+  transition: background 0.15s ease;
 }
 
 .level-header:hover {
-  background: #f8f9fb;
+  background: #f5f7fa;
 }
 
 .level-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .level-number {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: #eee;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   color: #666;
   flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .level-section.all-done .level-number {
@@ -281,6 +329,7 @@ header {
   display: block;
   font-size: 14px;
   font-weight: 600;
+  font-family: "Bricolage Grotesque", -apple-system, sans-serif;
   color: #333;
 }
 
@@ -288,6 +337,7 @@ header {
   display: block;
   font-size: 12px;
   color: #999;
+  margin-top: 2px;
 }
 
 .level-progress {
@@ -298,12 +348,15 @@ header {
 }
 
 .level-body {
-  display: none;
-  padding: 0 16px 12px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  padding: 0 20px;
 }
 
 .level-section.expanded .level-body {
-  display: block;
+  max-height: 3000px;
+  padding-bottom: 16px;
 }
 
 /* Exercise cards */
@@ -311,12 +364,27 @@ header {
 .exercise-card {
   background: #f8f9fb;
   border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 8px;
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  border-left: 3px solid transparent;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+.exercise-card:has(.difficulty-warm-up) {
+  border-left-color: #b8e6c8;
+}
+
+.exercise-card:has(.difficulty-core) {
+  border-left-color: #b3d1f7;
+}
+
+.exercise-card:has(.difficulty-stretch) {
+  border-left-color: #f5d4a0;
 }
 
 .exercise-card.completed {
-  opacity: 0.6;
+  opacity: 0.5;
+  background: #fafbfc;
 }
 
 .exercise-header {
@@ -329,7 +397,7 @@ header {
 .exercise-check {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
+  gap: 10px;
   cursor: pointer;
   flex: 1;
 }
@@ -337,17 +405,20 @@ header {
 .exercise-check input[type="checkbox"] {
   margin-top: 3px;
   flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  accent-color: #00a63f;
 }
 
 .exercise-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: #333;
 }
 
 .exercise-card.completed .exercise-title {
   text-decoration: line-through;
-  color: #999;
+  color: #aaa;
 }
 
 .difficulty-tag {
@@ -355,7 +426,7 @@ header {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: 10px;
   flex-shrink: 0;
 }
@@ -376,21 +447,22 @@ header {
 }
 
 .exercise-body {
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .exercise-goal {
-  font-size: 13px;
+  font-size: 14px;
   color: #555;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  line-height: 1.5;
 }
 
 .exercise-hint {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .exercise-hint summary {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: #0073ec;
   cursor: pointer;
@@ -406,10 +478,11 @@ header {
   font-size: 12px;
   color: #555;
   background: #fff;
-  padding: 8px 32px 8px 10px;
+  padding: 10px 40px 10px 12px;
   border-radius: 6px;
   border: 1px solid #e0e0e0;
-  font-family: "SF Mono", "Fira Code", monospace;
+  font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
+  line-height: 1.6;
 }
 
 .copy-hint {
@@ -424,6 +497,7 @@ header {
   padding: 4px 6px;
   border-radius: 4px;
   line-height: 1;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .copy-hint:hover {
@@ -436,9 +510,10 @@ header {
 }
 
 .exercise-outcome {
-  font-size: 12px;
+  font-size: 13px;
   color: #555;
-  padding: 6px 0;
+  padding: 8px 0;
+  line-height: 1.5;
 }
 
 .exercise-outcome strong {
@@ -446,12 +521,13 @@ header {
 }
 
 .exercise-pro-tip {
-  font-size: 12px;
+  font-size: 13px;
   color: #e87400;
-  padding: 6px 10px;
+  padding: 10px 12px;
   background: #fff8f0;
   border-radius: 6px;
-  margin-top: 4px;
+  margin-top: 6px;
+  line-height: 1.5;
 }
 
 .exercise-pro-tip strong {
@@ -461,7 +537,7 @@ header {
 .reset-progress {
   display: block;
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background: none;
   border: none;
   border-top: 1px solid #eee;
@@ -470,6 +546,7 @@ header {
   cursor: pointer;
   text-align: center;
   font-family: inherit;
+  transition: color 0.15s ease, background 0.15s ease;
 }
 
 .reset-progress:hover {
@@ -478,13 +555,17 @@ header {
 }
 
 @media (max-width: 768px) {
+  .layout { flex-direction: column; }
   main { padding: 16px; }
   .summary-cards { grid-template-columns: 1fr 1fr; }
   #controls { flex-direction: column; }
   #controls input { min-width: auto; }
 
-  .exercise-panel {
+  .exercise-panel.open {
     width: 100%;
-    right: -100%;
+  }
+
+  .exercise-panel-inner {
+    min-width: 100%;
   }
 }

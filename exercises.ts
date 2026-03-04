@@ -240,9 +240,39 @@ function renderExerciseList(expandedLevelId: number | null): void {
   renderProgressBar(progress);
 }
 
-function renderResetLink(): void {
-  const panel = document.getElementById("exercise-panel");
-  if (!panel || panel.querySelector(".reset-progress")) return;
+function wrapPanelContent(panel: HTMLElement): void {
+  if (panel.querySelector(".exercise-panel-inner")) return;
+
+  const inner = document.createElement("div");
+  inner.className = "exercise-panel-inner";
+
+  const scrollArea = document.createElement("div");
+  scrollArea.className = "exercise-panel-scroll";
+
+  const panelHeader = panel.querySelector(".exercise-panel-header");
+  const exerciseList = panel.querySelector("#exercise-list");
+
+  if (panelHeader) inner.appendChild(panelHeader);
+  if (exerciseList) scrollArea.appendChild(exerciseList);
+  inner.appendChild(scrollArea);
+  panel.appendChild(inner);
+}
+
+function renderCloseButton(panel: HTMLElement, toggleFn: () => void): void {
+  const panelHeader = panel.querySelector(".exercise-panel-header");
+  if (!panelHeader || panelHeader.querySelector(".panel-close")) return;
+
+  const closeBtn = document.createElement("button");
+  closeBtn.className = "panel-close";
+  closeBtn.type = "button";
+  closeBtn.title = "Close exercises";
+  closeBtn.textContent = "\u00D7";
+  closeBtn.addEventListener("click", toggleFn);
+  panelHeader.appendChild(closeBtn);
+}
+
+function renderResetLink(scrollArea: HTMLElement): void {
+  if (scrollArea.querySelector(".reset-progress")) return;
 
   const resetLink = document.createElement("button");
   resetLink.className = "reset-progress";
@@ -254,7 +284,7 @@ function renderResetLink(): void {
       renderExerciseList(expandedLevel);
     }
   });
-  panel.appendChild(resetLink);
+  scrollArea.appendChild(resetLink);
 }
 
 // --- Initialization ---
@@ -266,26 +296,36 @@ function init(): void {
   const panel = document.getElementById("exercise-panel");
   if (!toggleBtn || !panel) return;
 
+  // Wrap panel content for push layout
+  wrapPanelContent(panel);
+
   const progress = loadProgress();
 
   // Auto-expand first incomplete level, or restore saved state
   const saved = loadExpandedLevel();
   expandedLevel = saved ?? findFirstIncompleteLevel(progress) ?? 1;
 
+  // Toggle function shared by button and close icon
+  const togglePanel = (): void => {
+    const isOpen = panel.classList.toggle("open");
+    savePanelOpen(isOpen);
+  };
+
   // Restore panel state
   if (loadPanelOpen()) {
     panel.classList.add("open");
   }
 
-  // Toggle panel
-  toggleBtn.addEventListener("click", () => {
-    const isOpen = panel.classList.toggle("open");
-    savePanelOpen(isOpen);
-  });
+  // Toggle panel from header button
+  toggleBtn.addEventListener("click", togglePanel);
+
+  // Close button inside panel
+  renderCloseButton(panel, togglePanel);
 
   // Render exercises and reset link
   renderExerciseList(expandedLevel);
-  renderResetLink();
+  const scrollArea = panel.querySelector(".exercise-panel-scroll") as HTMLElement;
+  if (scrollArea) renderResetLink(scrollArea);
 
   // Delegate clicks for accordion and checkboxes
   const exerciseList = document.getElementById("exercise-list");
