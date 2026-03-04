@@ -10,7 +10,7 @@
     "monthlyRevenue": 29.99,
     "domain": "bellasbakery.com",
     "created": "2025-03-15",
-    "plugins": ["WooCommerce", "Yoast SEO", "Airo"],
+    "plugins": ["WooCommerce", "Yoast SEO", "AI Builder"],
     "pageViews": 12400,
     "region": "US-West"
   },
@@ -55,7 +55,7 @@
     "monthlyRevenue": 49.99,
     "domain": "freshfitmeals.com",
     "created": "2025-06-10",
-    "plugins": ["WooCommerce", "Airo", "Stripe Gateway"],
+    "plugins": ["WooCommerce", "AI Builder", "Stripe Gateway"],
     "pageViews": 22100,
     "region": "US-Central"
   },
@@ -85,7 +85,7 @@
     "monthlyRevenue": 39.99,
     "domain": "nordicdesignstudio.com",
     "created": "2024-06-18",
-    "plugins": ["Elementor", "WP Rocket", "Airo"],
+    "plugins": ["Elementor", "WP Rocket", "AI Builder"],
     "pageViews": 15600,
     "region": "EU"
   },
@@ -130,7 +130,7 @@
     "monthlyRevenue": 59.99,
     "domain": "goldengatefitness.com",
     "created": "2024-03-22",
-    "plugins": ["WooCommerce", "Airo", "BookingPress", "Yoast SEO"],
+    "plugins": ["WooCommerce", "AI Builder", "BookingPress", "Yoast SEO"],
     "pageViews": 31200,
     "region": "US-West"
   },
@@ -145,7 +145,7 @@
     "monthlyRevenue": 12.99,
     "domain": "lunasartgallery.com",
     "created": "2025-07-30",
-    "plugins": ["Envira Gallery", "Airo"],
+    "plugins": ["Envira Gallery", "AI Builder"],
     "pageViews": 4300,
     "region": "US-East"
   },
@@ -160,7 +160,7 @@
     "monthlyRevenue": 39.99,
     "domain": "ridgelineadventures.co",
     "created": "2025-04-12",
-    "plugins": ["WooCommerce", "YITH Booking", "Airo"],
+    "plugins": ["WooCommerce", "YITH Booking", "AI Builder"],
     "pageViews": 18700,
     "region": "US-West"
   },
@@ -190,7 +190,7 @@
     "monthlyRevenue": 59.99,
     "domain": "pixelperfectagency.com",
     "created": "2024-01-10",
-    "plugins": ["Elementor Pro", "ACF Pro", "WP Rocket", "Airo", "Gravity Forms"],
+    "plugins": ["Elementor Pro", "ACF Pro", "WP Rocket", "AI Builder", "Gravity Forms"],
     "pageViews": 42500,
     "region": "US-East"
   },
@@ -220,7 +220,7 @@
     "monthlyRevenue": 49.99,
     "domain": "harborcoffeeroasters.com",
     "created": "2025-12-01",
-    "plugins": ["WooCommerce", "Airo", "Mailchimp"],
+    "plugins": ["WooCommerce", "AI Builder", "Mailchimp"],
     "pageViews": 9800,
     "region": "US-West"
   }

@@ -1,6 +1,6 @@
 # Site Dashboard - Vibe Coding Starter
 
-A simple product metrics dashboard for the GoDaddy PM Vibe Coding Lunch-and-Learn.
+A simple product metrics dashboard for the PM Vibe Coding Lunch-and-Learn.
 
 ## Getting Started
 
