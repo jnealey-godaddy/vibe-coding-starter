@@ -1,21 +1,23 @@
+export type Difficulty = "warm-up" | "core" | "stretch";
+
 export interface Exercise {
-  id: string;
-  title: string;
-  difficulty: "warm-up" | "core" | "stretch";
-  goal: string;
-  hint: string;
-  outcome: string;
-  proTip: string | null;
+  readonly id: string;
+  readonly title: string;
+  readonly difficulty: Difficulty;
+  readonly goal: string;
+  readonly hint: string;
+  readonly outcome: string;
+  readonly proTip: string | null;
 }
 
 export interface Level {
-  id: number;
-  title: string;
-  theme: string;
-  exercises: Exercise[];
+  readonly id: number;
+  readonly title: string;
+  readonly theme: string;
+  readonly exercises: readonly Exercise[];
 }
 
-export const levels: Level[] = [
+export const levels: readonly Level[] = [
   {
     id: 1,
     title: "Explore and Orient",

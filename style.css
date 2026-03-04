@@ -39,7 +39,7 @@ header h1 {
 }
 
 .subtitle {
-  color: #777;
+  color: #ccc;
   font-size: 13px;
 }
 
@@ -260,8 +260,20 @@ tr:hover {
 #progress-text {
   font-size: 12px;
   font-weight: 600;
-  color: #999;
+  color: #ccc;
   margin-top: 4px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 /* Level accordion */
@@ -366,10 +378,9 @@ tr:hover {
 .exercise-card {
   background: #f8f9fb;
   border-radius: 8px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   border-left: 3px solid transparent;
-  transition: opacity 0.2s ease, border-color 0.2s ease;
+  transition: opacity 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
 .exercise-card:has(.difficulty-warm-up) {
@@ -385,27 +396,42 @@ tr:hover {
 }
 
 .exercise-card.completed {
-  opacity: 0.5;
+  opacity: 0.55;
   background: #fafbfc;
 }
+
+.exercise-card.expanded {
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Card header - always visible */
 
 .exercise-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  border-radius: 8px;
+}
+
+.exercise-header:hover {
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .exercise-check {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   cursor: pointer;
   flex: 1;
+  min-width: 0;
 }
 
 .exercise-check input[type="checkbox"] {
-  margin-top: 3px;
   flex-shrink: 0;
   width: 16px;
   height: 16px;
@@ -413,9 +439,10 @@ tr:hover {
 }
 
 .exercise-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: #333;
+  line-height: 1.3;
 }
 
 .exercise-card.completed .exercise-title {
@@ -423,12 +450,32 @@ tr:hover {
   color: #aaa;
 }
 
+.exercise-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.exercise-chevron {
+  font-size: 16px;
+  color: #bbb;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.exercise-card.expanded .exercise-chevron {
+  transform: rotate(90deg);
+  color: #666;
+}
+
 .difficulty-tag {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: 10px;
   flex-shrink: 0;
 }
@@ -448,54 +495,68 @@ tr:hover {
   color: #e87400;
 }
 
+/* Card body - hidden by default, shown on expand */
+
 .exercise-body {
-  margin-top: 10px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  padding: 0 14px;
+}
+
+.exercise-card.expanded .exercise-body {
+  max-height: 800px;
+  padding: 0 14px 14px;
 }
 
 .exercise-goal {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 10px;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 12px;
   line-height: 1.5;
 }
 
-.exercise-hint {
-  margin-bottom: 10px;
+/* Prompt section */
+
+.exercise-prompt {
+  margin-bottom: 12px;
 }
 
-.exercise-hint summary {
-  font-size: 13px;
-  font-weight: 600;
+.exercise-prompt-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   color: #0073ec;
-  cursor: pointer;
-  padding: 4px 0;
+  margin-bottom: 6px;
 }
 
-.hint-content {
+.exercise-prompt-block {
   position: relative;
-  margin-top: 4px;
+  background: #1e1e2e;
+  border-radius: 8px;
+  padding: 12px 40px 12px 14px;
+  border-left: 3px solid #0073ec;
 }
 
-.exercise-hint p {
+.exercise-prompt-block p {
   font-size: 12px;
-  color: #555;
-  background: #fff;
-  padding: 10px 40px 10px 12px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
+  color: #cdd6f4;
   font-family: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
   line-height: 1.6;
+  margin: 0;
 }
 
 .copy-hint {
   position: absolute;
-  top: 6px;
-  right: 6px;
+  top: 8px;
+  right: 8px;
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 18px;
-  color: #999;
+  font-size: 16px;
+  color: #6c7086;
   padding: 4px 6px;
   border-radius: 4px;
   line-height: 1;
@@ -503,37 +564,61 @@ tr:hover {
 }
 
 .copy-hint:hover {
-  background: #f0f0f0;
-  color: #333;
+  background: rgba(255, 255, 255, 0.1);
+  color: #cdd6f4;
 }
 
 .copy-hint.copied {
-  color: #00a63f;
+  color: #a6e3a1;
 }
+
+/* Outcome section */
 
 .exercise-outcome {
-  font-size: 13px;
-  color: #555;
-  padding: 8px 0;
-  line-height: 1.5;
+  background: #f0faf4;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  border-left: 3px solid #00a63f;
 }
 
-.exercise-outcome strong {
-  color: #333;
+.exercise-outcome-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #00a63f;
+  margin-bottom: 4px;
 }
+
+.exercise-outcome p {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Pro tip section */
 
 .exercise-pro-tip {
-  font-size: 13px;
-  color: #e87400;
-  padding: 10px 12px;
   background: #fff8f0;
   border-radius: 6px;
-  margin-top: 6px;
-  line-height: 1.5;
+  padding: 10px 12px;
+  border-left: 3px solid #e87400;
 }
 
-.exercise-pro-tip strong {
-  color: #c56200;
+.exercise-tip-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #e87400;
+  margin-bottom: 4px;
+}
+
+.exercise-pro-tip p {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.5;
+  margin: 0;
 }
 
 .reset-progress {

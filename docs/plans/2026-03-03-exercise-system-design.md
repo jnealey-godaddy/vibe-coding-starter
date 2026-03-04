@@ -13,14 +13,14 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
 - **Verification:** Self-check with expected outcome descriptions. PM clicks "Mark Complete" manually.
 - **Prompts:** Goal-first with expandable "Try this prompt" hints for beginners
 - **Progress:** localStorage persistence across browser sessions
-- **Scope:** 10 levels, 3-5 exercises each, ~40 exercises total
+- **Scope:** 10 levels, 3-6 exercises each, 43 exercises total
 
 ## UI Architecture
 
 ### Exercise Panel (sidebar)
 - Fixed right sidebar, 400px wide
 - Toggled via "Exercises" button in header
-- When open, main dashboard content shifts left
+- When open, panel overlays content (does not push/shift the dashboard)
 - On mobile (<768px), panel goes full-width overlay
 
 ### Level Accordion
@@ -39,8 +39,14 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
 
 ### Progress Bar
 - Top of panel, shows total exercises completed across all levels
-- Text: "X / 40 completed"
+- Text: "X / 43 completed"
 - State persisted in localStorage key `vibe-exercises-progress`
+- On load, auto-expands the first level with incomplete exercises so returning users see where they left off
+
+### Reset Progress
+- "Reset Progress" link at the bottom of the panel
+- Shows a confirmation prompt before clearing localStorage
+- Resets all exercise completions, panel state, and expanded level
 
 ## Curriculum: 10 Levels
 
@@ -72,6 +78,12 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
    - Hint: "What event fires when the product filter dropdown is changed? Trace from the HTML element to the event listener."
    - Outcome: You understand how DOM events connect UI actions to code (the `change` event on `#filter-product` triggers `applyFilters`)
    - Pro tip: In real GoDaddy repos, you can ask AI to find EID event instrumentation the same way -- "What EID fires when a user clicks [button]?"
+
+6. **Vague vs. structured prompt** (Stretch)
+   - Goal: See how prompt quality changes AI output by trying two versions of the same question
+   - Hint: First ask: "Tell me about the data." Then ask: "Analyze sites.json and give me a summary table showing: count of sites per product type, average CSAT per product type, and total monthly revenue per product type. Format as a markdown table." Compare the two responses.
+   - Outcome: The vague prompt gives a generic overview. The structured prompt gives you an actionable table you could paste into a Slack message or a slide.
+   - Pro tip: The pattern is: specify the data source, the exact metrics you want, the grouping, and the output format. This works the same way when you ask AI to analyze a CSV, a database query result, or a QuickSight dataset.
 
 ### Level 2: First Changes
 *Theme: Make your first visible modifications*
@@ -147,6 +159,8 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
 ### Level 5: Bug Hunt
 *Theme: Find and fix a real bug hidden in the code*
 
+> **Implementation note:** The starter app ships with an intentional off-by-one error in `calculateStats` (`i < filteredSites.length - 1` instead of `i < filteredSites.length`). This bug is subtle enough that users won't notice it before reaching this level -- the revenue total is only slightly off because it skips the last site. Do not fix this bug during initial setup.
+
 1. **Spot the discrepancy** (Warm-up)
    - Goal: Manually add up the monthly revenue for all 15 sites. Does the dashboard total match?
    - Hint: Open sites.json and add up all the monthlyRevenue values. Compare to what the dashboard shows.
@@ -195,20 +209,20 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
 *Theme: Add charts and visual data stories*
 
 1. **Bar chart** (Core)
-   - Goal: Add a bar chart showing CSAT scores by site
-   - Hint: "Add a horizontal bar chart below the table showing CSAT scores for each site. You can use plain HTML/CSS or a library like Chart.js"
-   - Outcome: A bar chart appears with each site's CSAT score visualized
+   - Goal: Add a bar chart showing CSAT scores by site using pure HTML/CSS
+   - Hint: "Add a horizontal bar chart below the table showing CSAT scores for each site. Use colored div elements with widths based on the CSAT score -- no charting library needed"
+   - Outcome: A bar chart appears with each site's CSAT score visualized as colored bars
 
 2. **Pie chart** (Core)
-   - Goal: Add a pie chart showing the product type distribution
-   - Hint: "Add a pie chart showing what percentage of sites use each product type (WordPress, Managed WordPress, Websites + Marketing)"
+   - Goal: Add a pie chart showing the product type distribution using CSS
+   - Hint: "Add a pie chart showing what percentage of sites use each product type (WordPress, Managed WordPress, Websites + Marketing). Use a CSS conic-gradient approach -- no library needed"
    - Outcome: A pie chart appears with 3 segments showing the product mix
 
 3. **Make it interactive** (Stretch)
    - Goal: Add hover tooltips or click interactions to a chart
-   - Hint: "Make the bar chart interactive -- show the exact CSAT score and site name when you hover over a bar"
+   - Hint: "Make the bar chart interactive -- show the exact CSAT score and site name when you hover over a bar. Use CSS :hover and a tooltip element"
    - Outcome: Hovering over chart elements reveals details
-   - Pro tip: Interactive visualizations are great for stakeholder presentations -- you can prototype them in minutes with AI
+   - Pro tip: For production dashboards you'd use Chart.js or D3 -- but pure CSS charts are great for quick prototypes and keep this project dependency-free
 
 ### Level 8: Build a New View
 *Theme: Create something that doesn't exist yet*
@@ -223,10 +237,16 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
    - Hint: "Add checkboxes to each row and a 'Compare' button that shows a side-by-side comparison of the selected sites"
    - Outcome: Selecting two sites and clicking Compare shows their stats side-by-side
 
-3. **Executive summary page** (Stretch)
-   - Goal: Create a separate page with high-level metrics and navigation back to the table
-   - Hint: "Create a new page called summary.html with a high-level executive overview: total sites, total revenue, average CSAT, top/bottom performers, and a link back to the main dashboard"
-   - Outcome: A new page exists with an executive-friendly view of the portfolio
+3. **Executive summary view** (Stretch)
+   - Goal: Add a toggleable executive summary view within the existing page
+   - Hint: "Add a 'Summary View' toggle button in the header. When clicked, hide the table and show an executive overview section with total sites, total revenue, average CSAT, and top/bottom performers. Clicking 'Table View' switches back."
+   - Outcome: A toggle switches between the detailed table and a high-level executive view, all within the same page
+
+4. **Build from a screenshot** (Stretch)
+   - Goal: Take a screenshot of any UI you like (a competitor's dashboard, a Figma mock, a sketch on paper) and use it as an AI input to generate code
+   - Hint: Take a screenshot and paste it into the AI chat. Then say: "Build me a component that looks like this screenshot. Use the same layout and visual style but populate it with data from sites.json."
+   - Outcome: AI generates a new section or component that visually matches your reference image, wired to real data
+   - Pro tip: This is one of the highest-leverage PM workflows -- go from a whiteboard sketch or Figma mock to a working prototype in minutes. Some PMs use this to estimate LOE by asking "how complex would this be to build?" after the AI generates the code.
 
 ### Level 9: Prototype Your Own Idea
 *Theme: Apply vibe coding to your actual PM work*
@@ -235,10 +255,17 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
    - Goal: Think about a task from your PM workflow that you currently do manually or ask engineering for help with
    - Hint: No AI prompt needed -- just reflect. Examples: a prioritization scorecard, a competitive comparison table, a release checklist, a customer feedback tracker
    - Outcome: You have a concrete idea for something you want to build
+   - Mark complete when: You can describe your idea in one sentence
 
-2. **Describe it to AI** (Core)
-   - Goal: Open a new file or project and describe what you want to build in plain English
-   - Hint: "I want to build a [description]. It should have [features]. The data looks like [description]. Can you help me build this?"
+2. **Write a mini-spec first** (Core)
+   - Goal: Before prompting AI, write a short spec for your idea -- 3-5 bullet points covering what it does, what data it needs, and what the output looks like
+   - Hint: Write something like: "Tool: Priority Scorecard. Purpose: Rank feature requests by impact and effort. Data: a list of features with name, impact score (1-5), effort score (1-5), and requestor. Output: a table sorted by impact/effort ratio with color-coded priority bands."
+   - Outcome: You have a structured spec you can hand to AI instead of a vague description
+   - Pro tip: PMs who write a spec before prompting get dramatically better first-pass output. It also becomes the acceptance criteria -- you can tell AI "this doesn't match the spec, the table should be sorted by ratio" instead of vague feedback. This is the same pattern as writing a PRD before handing work to engineering.
+
+3. **Describe it to AI** (Core)
+   - Goal: Open a new file or project and give AI your mini-spec from the previous exercise
+   - Hint: Paste your spec into the chat and say: "Build this for me as a single HTML page with inline CSS and JS. Here's the spec: [your spec]."
    - Outcome: AI generates a first pass of your idea that you can see in the browser
 
 3. **Iterate to a working prototype** (Stretch)
@@ -249,6 +276,8 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
 
 ### Level 10: Ship It
 *Theme: Learn the basics of version control*
+
+> **Prerequisite:** These exercises assume you're working in a git repository. If `git status` returns an error, ask AI: "Help me initialize a git repository in this project and make an initial commit."
 
 1. **Check your changes** (Warm-up)
    - Goal: Ask AI to explain what `git status` and `git diff` show you
@@ -270,6 +299,18 @@ Add a 10-level interactive exercise system built into the Site Dashboard starter
    - Hint: "Explain what a pull request is, how it works, and give me an example of when a PM would create one vs. just prototyping locally"
    - Outcome: You understand PRs as a way to propose changes for review -- useful when your prototype is ready to become real code
    - Pro tip: Even if you never create a PR, understanding them helps you speak engineering's language in sprint planning
+
+5. **Spot the security risk** (Stretch)
+   - Goal: Ask AI to review your code for security issues, focusing on hardcoded values and exposed data
+   - Hint: "Review my project for security risks. Are there any API keys, passwords, or sensitive data hardcoded in the source files? What should I never commit to git?"
+   - Outcome: AI explains the concept of environment variables, .gitignore, and why you never put API keys or credentials in source code that gets committed
+   - Pro tip: Nearly half of AI-generated code contains security flaws. The most common mistake is hardcoding credentials. When you build real prototypes that connect to APIs, always ask AI: "Is anything sensitive exposed in this code?"
+
+6. **Write a handoff brief** (Stretch)
+   - Goal: Ask AI to generate a handoff document that an engineer could use to understand your prototype
+   - Hint: "Write a brief for an engineer explaining: what this prototype demonstrates, what decisions were made, what's a hack vs. what should be kept, and what needs real engineering to be production-ready."
+   - Outcome: AI generates a structured handoff document that separates "proof of concept" from "production-ready" code
+   - Pro tip: A working prototype with a clear handoff brief changes the PM-eng dynamic. Instead of writing a Jira ticket describing what you want, you're showing a working version and explaining what needs to be hardened. Engineers can evaluate the approach rather than interpret your requirements from scratch.
 
 ## Technical Implementation
 

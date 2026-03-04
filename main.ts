@@ -14,15 +14,23 @@ interface Site {
   region: string;
 }
 
+interface SiteStats {
+  totalSites: number;
+  activeSites: number;
+  totalRevenue: number;
+  avgCsat: number;
+}
+
 import sitesData from "./data/sites.json";
 const sites: Site[] = sitesData as Site[];
 
 // Render summary cards
-function calculateStats(filteredSites: Site[]) {
+function calculateStats(filteredSites: Site[]): SiteStats {
   const totalSites = filteredSites.length;
   const activeSites = filteredSites.filter((s) => s.status === "active").length;
 
   let totalRevenue = 0;
+  // INTENTIONAL BUG for exercise 5-2: should be filteredSites.length (not -1)
   for (let i = 0; i < filteredSites.length - 1; i++) {
     totalRevenue += filteredSites[i].monthlyRevenue;
   }
@@ -36,48 +44,43 @@ function calculateStats(filteredSites: Site[]) {
   return { totalSites, activeSites, totalRevenue, avgCsat };
 }
 
-function renderSummary(stats: ReturnType<typeof calculateStats>) {
-  const container = document.getElementById("summary");
-  if (!container) return;
-  container.innerHTML = `
-    <div class="card">
-      <div class="label">Total Sites</div>
-      <div class="value blue">${stats.totalSites}</div>
-    </div>
-    <div class="card">
-      <div class="label">Active Sites</div>
-      <div class="value green">${stats.activeSites}</div>
-    </div>
-    <div class="card">
-      <div class="label">Monthly Revenue</div>
-      <div class="value green">$${stats.totalRevenue.toFixed(2)}</div>
-    </div>
-    <div class="card">
-      <div class="label">Avg CSAT (out of 7)</div>
-      <div class="value ${stats.avgCsat >= 5 ? "green" : "orange"}">${stats.avgCsat.toFixed(1)}</div>
-    </div>
-  `;
+function createSummaryCard(label: string, value: string, colorClass: string, srHint?: string): HTMLElement {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const labelDiv = document.createElement("div");
+  labelDiv.className = "label";
+  labelDiv.textContent = label;
+
+  const valueDiv = document.createElement("div");
+  valueDiv.className = `value ${colorClass}`;
+  valueDiv.textContent = value;
+
+  if (srHint) {
+    const hint = document.createElement("span");
+    hint.className = "sr-only";
+    hint.textContent = srHint;
+    valueDiv.appendChild(hint);
+  }
+
+  card.appendChild(labelDiv);
+  card.appendChild(valueDiv);
+  return card;
 }
 
-// Render table rows
-function renderTable(filteredSites: Site[]) {
-  const tbody = document.getElementById("sites-body");
-  if (!tbody) return;
-  tbody.innerHTML = filteredSites
-    .map(
-      (site) => `
-    <tr>
-      <td><strong>${site.name}</strong><br><small>${site.domain}</small></td>
-      <td>${site.owner}</td>
-      <td>${site.product}</td>
-      <td><span class="status-badge status-${site.status}">${site.status}</span></td>
-      <td><span class="csat-score ${getCsatClass(site.csat)}">${site.csat !== null ? site.csat.toFixed(1) : "-"}</span></td>
-      <td>${site.monthlyRevenue > 0 ? "$" + site.monthlyRevenue.toFixed(2) : "-"}</td>
-      <td>${site.created}</td>
-    </tr>
-  `
-    )
-    .join("");
+function renderSummary(stats: SiteStats) {
+  const container = document.getElementById("summary");
+  if (!container) return;
+
+  const csatColor = stats.avgCsat >= 5 ? "green" : "orange";
+  const csatHint = stats.avgCsat >= 5 ? " (good)" : " (needs attention)";
+
+  container.replaceChildren(
+    createSummaryCard("Total Sites", String(stats.totalSites), "blue"),
+    createSummaryCard("Active Sites", String(stats.activeSites), "green"),
+    createSummaryCard("Monthly Revenue", `$${stats.totalRevenue.toFixed(2)}`, "green"),
+    createSummaryCard("Avg CSAT (out of 7)", stats.avgCsat.toFixed(1), csatColor, csatHint),
+  );
 }
 
 function getCsatClass(csat: number | null): string {
@@ -85,6 +88,83 @@ function getCsatClass(csat: number | null): string {
   if (csat >= 5.5) return "csat-good";
   if (csat >= 4.0) return "csat-ok";
   return "csat-bad";
+}
+
+function getCsatLabel(csat: number | null): string {
+  if (csat === null) return "";
+  if (csat >= 5.5) return "good";
+  if (csat >= 4.0) return "ok";
+  return "poor";
+}
+
+// Render table rows
+function renderTable(filteredSites: Site[]) {
+  const tbody = document.getElementById("sites-body");
+  if (!tbody) return;
+
+  const fragment = document.createDocumentFragment();
+
+  for (const site of filteredSites) {
+    const tr = document.createElement("tr");
+
+    // Site name + domain
+    const tdName = document.createElement("td");
+    const strong = document.createElement("strong");
+    strong.textContent = site.name;
+    tdName.appendChild(strong);
+    tdName.appendChild(document.createElement("br"));
+    const small = document.createElement("small");
+    small.textContent = site.domain;
+    tdName.appendChild(small);
+    tr.appendChild(tdName);
+
+    // Owner
+    const tdOwner = document.createElement("td");
+    tdOwner.textContent = site.owner;
+    tr.appendChild(tdOwner);
+
+    // Product
+    const tdProduct = document.createElement("td");
+    tdProduct.textContent = site.product;
+    tr.appendChild(tdProduct);
+
+    // Status badge
+    const tdStatus = document.createElement("td");
+    const badge = document.createElement("span");
+    badge.className = `status-badge status-${site.status}`;
+    badge.textContent = site.status;
+    tdStatus.appendChild(badge);
+    tr.appendChild(tdStatus);
+
+    // CSAT score with a11y label
+    const tdCsat = document.createElement("td");
+    const csatSpan = document.createElement("span");
+    csatSpan.className = `csat-score ${getCsatClass(site.csat)}`;
+    csatSpan.textContent = site.csat !== null ? site.csat.toFixed(1) : "-";
+    const csatLabel = getCsatLabel(site.csat);
+    if (csatLabel) {
+      const srLabel = document.createElement("span");
+      srLabel.className = "sr-only";
+      srLabel.textContent = ` (${csatLabel})`;
+      csatSpan.appendChild(srLabel);
+    }
+    tdCsat.appendChild(csatSpan);
+    tr.appendChild(tdCsat);
+
+    // Revenue
+    const tdRevenue = document.createElement("td");
+    tdRevenue.textContent = site.monthlyRevenue > 0 ? "$" + site.monthlyRevenue.toFixed(2) : "-";
+    tr.appendChild(tdRevenue);
+
+    // Created
+    const tdCreated = document.createElement("td");
+    tdCreated.textContent = site.created;
+    tr.appendChild(tdCreated);
+
+    fragment.appendChild(tr);
+  }
+
+  tbody.replaceChildren(fragment);
 }
 
 // Populate product filter dropdown
@@ -134,11 +214,20 @@ function applyFilters() {
   renderTable(filtered);
 }
 
+// Debounce helper
+function debounce(fn: () => void, ms: number): () => void {
+  let timer: ReturnType<typeof setTimeout>;
+  return () => {
+    clearTimeout(timer);
+    timer = setTimeout(fn, ms);
+  };
+}
+
 // Initialize
 populateProductFilter();
 applyFilters();
 
 // Event listeners
-document.getElementById("search")?.addEventListener("input", applyFilters);
+document.getElementById("search")?.addEventListener("input", debounce(applyFilters, 180));
 document.getElementById("filter-product")?.addEventListener("change", applyFilters);
 document.getElementById("filter-status")?.addEventListener("change", applyFilters);
