@@ -121,10 +121,34 @@ function createExerciseCard(exercise: Exercise, progress: ProgressMap): HTMLElem
   details.className = "exercise-hint";
   const summary = document.createElement("summary");
   summary.textContent = "Try this prompt";
+
+  const hintWrap = document.createElement("div");
+  hintWrap.className = "hint-content";
+
   const hintP = document.createElement("p");
   hintP.textContent = exercise.hint;
+
+  const copyBtn = document.createElement("button");
+  copyBtn.className = "copy-hint";
+  copyBtn.type = "button";
+  copyBtn.title = "Copy prompt";
+  copyBtn.textContent = "\u2398";
+  copyBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(exercise.hint).then(() => {
+      copyBtn.textContent = "\u2713";
+      copyBtn.classList.add("copied");
+      setTimeout(() => {
+        copyBtn.textContent = "\u2398";
+        copyBtn.classList.remove("copied");
+      }, 1500);
+    });
+  });
+
+  hintWrap.appendChild(hintP);
+  hintWrap.appendChild(copyBtn);
   details.appendChild(summary);
-  details.appendChild(hintP);
+  details.appendChild(hintWrap);
   body.appendChild(details);
 
   const outcomeDiv = document.createElement("div");
