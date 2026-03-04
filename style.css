@@ -370,6 +370,7 @@ tr:hover {
 
 .level-section.expanded .level-body {
   max-height: 3000px;
+  padding-top: 8px;
   padding-bottom: 16px;
 }
 
@@ -377,7 +378,7 @@ tr:hover {
 
 .exercise-card {
   background: #f8f9fb;
-  border-radius: 8px;
+  border-radius: 2px;
   margin-bottom: 8px;
   border-left: 3px solid transparent;
   transition: opacity 0.2s ease, border-color 0.2s ease, background 0.2s ease;
@@ -415,7 +416,7 @@ tr:hover {
   padding: 12px 14px;
   cursor: pointer;
   transition: background 0.15s ease;
-  border-radius: 8px;
+  border-radius: 2px;
 }
 
 .exercise-header:hover {
@@ -523,21 +524,40 @@ tr:hover {
 }
 
 .exercise-prompt-label {
-  display: block;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #0073ec;
   margin-bottom: 6px;
+  cursor: pointer;
+  list-style: none;
+  padding: 2px 0;
+}
+
+.exercise-prompt-label::-webkit-details-marker {
+  display: none;
+}
+
+.exercise-prompt-label::before {
+  content: "\25B6";
+  font-size: 8px;
+  margin-right: 6px;
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+
+.exercise-prompt[open] > .exercise-prompt-label::before {
+  transform: rotate(90deg);
 }
 
 .exercise-prompt-block {
   position: relative;
   background: #1e1e2e;
-  border-radius: 8px;
+  border-radius: 2px;
   padding: 12px 40px 12px 14px;
   border-left: 3px solid #0073ec;
+  margin-top: 6px;
 }
 
 .exercise-prompt-block p {
@@ -576,7 +596,7 @@ tr:hover {
 
 .exercise-outcome {
   background: #f0faf4;
-  border-radius: 6px;
+  border-radius: 2px;
   padding: 10px 12px;
   margin-bottom: 8px;
   border-left: 3px solid #00a63f;
@@ -601,7 +621,7 @@ tr:hover {
 
 .exercise-pro-tip {
   background: #fff8f0;
-  border-radius: 6px;
+  border-radius: 2px;
   padding: 10px 12px;
   border-left: 3px solid #e87400;
 }

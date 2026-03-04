@@ -101,8 +101,8 @@ function createExerciseCard(exercise: Exercise, progress: ProgressMap): HTMLElem
   const header = document.createElement("div");
   header.className = "exercise-header";
 
-  const label = document.createElement("label");
-  label.className = "exercise-check";
+  const checkWrap = document.createElement("div");
+  checkWrap.className = "exercise-check";
 
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
@@ -113,8 +113,8 @@ function createExerciseCard(exercise: Exercise, progress: ProgressMap): HTMLElem
   title.className = "exercise-title";
   title.textContent = exercise.title;
 
-  label.appendChild(checkbox);
-  label.appendChild(title);
+  checkWrap.appendChild(checkbox);
+  checkWrap.appendChild(title);
 
   const headerRight = document.createElement("div");
   headerRight.className = "exercise-header-right";
@@ -130,7 +130,7 @@ function createExerciseCard(exercise: Exercise, progress: ProgressMap): HTMLElem
   headerRight.appendChild(tag);
   headerRight.appendChild(chevron);
 
-  header.appendChild(label);
+  header.appendChild(checkWrap);
   header.appendChild(headerRight);
 
   // --- Body (hidden by default, shown on expand) ---
@@ -142,11 +142,11 @@ function createExerciseCard(exercise: Exercise, progress: ProgressMap): HTMLElem
   goalP.textContent = exercise.goal;
   body.appendChild(goalP);
 
-  // Prompt block (always visible when expanded, no nested collapsible)
-  const promptSection = document.createElement("div");
+  // Prompt block (hidden by default, toggled via details/summary)
+  const promptSection = document.createElement("details");
   promptSection.className = "exercise-prompt";
 
-  const promptLabel = document.createElement("span");
+  const promptLabel = document.createElement("summary");
   promptLabel.className = "exercise-prompt-label";
   promptLabel.textContent = "Try this prompt";
 
