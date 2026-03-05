@@ -402,6 +402,7 @@ tr:hover {
   overflow: hidden;
   transition: max-height 0.35s ease;
   padding: 0 20px;
+  min-width: 0;
 }
 
 .level-section.expanded .level-body {
@@ -675,6 +676,8 @@ tr:hover {
   color: #555;
   line-height: 1.5;
   margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* --- Setup Level --- */
@@ -746,6 +749,7 @@ tr:hover {
   overflow: hidden;
   transition: max-height 0.3s ease;
   padding: 0 14px;
+  min-width: 0;
 }
 
 .setup-card.expanded .setup-body {
@@ -769,6 +773,7 @@ tr:hover {
   padding: 10px 12px;
   margin-bottom: 8px;
   border-left: 3px solid #4a7c8f;
+  overflow: hidden;
 }
 
 .setup-instructions p {
@@ -777,6 +782,8 @@ tr:hover {
   line-height: 1.6;
   margin: 0;
   white-space: pre-line;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .setup-verify {
@@ -796,6 +803,8 @@ tr:hover {
   color: #555;
   line-height: 1.5;
   margin: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .reset-progress {
