@@ -36,20 +36,59 @@
         </select>
       </section>
       <section id="sites-table">
+        <nav id="pagination-top" class="table-pagination-host" aria-label="Table pagination, top"></nav>
+        <div class="table-scroll">
         <table>
           <thead>
             <tr>
-              <th>Site Name</th>
-              <th>Owner</th>
-              <th>Product</th>
-              <th>Status</th>
-              <th>CSAT</th>
-              <th>Monthly Revenue</th>
-              <th>Created</th>
+              <th scope="col">
+                <button type="button" class="sort-header" data-sort="name">
+                  <span class="sort-header-text">Site Name</span>
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th scope="col">
+                <button type="button" class="sort-header" data-sort="owner">
+                  <span class="sort-header-text">Owner</span>
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th scope="col">
+                <button type="button" class="sort-header" data-sort="product">
+                  <span class="sort-header-text">Product</span>
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th scope="col">
+                <button type="button" class="sort-header" data-sort="status">
+                  <span class="sort-header-text">Status</span>
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th scope="col">
+                <button type="button" class="sort-header" data-sort="csat">
+                  <span class="sort-header-text">CSAT</span>
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th scope="col">
+                <button type="button" class="sort-header" data-sort="monthlyRevenue">
+                  <span class="sort-header-text">Monthly Revenue</span>
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
+              <th scope="col">
+                <button type="button" class="sort-header" data-sort="created">
+                  <span class="sort-header-text">Created</span>
+                  <span class="sort-indicator" aria-hidden="true"></span>
+                </button>
+              </th>
             </tr>
           </thead>
           <tbody id="sites-body"></tbody>
         </table>
+        </div>
+        <nav id="pagination-bottom" class="table-pagination-host" aria-label="Table pagination, bottom"></nav>
       </section>
     </main>
 
