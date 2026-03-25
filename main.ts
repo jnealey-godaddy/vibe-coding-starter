@@ -31,6 +31,27 @@ function trackPageView(page: string) {
 import sitesData from "./data/sites.json";
 const sites: Site[] = sitesData as Site[];
 
+const PAGE_SIZE = 25;
+let currentPage = 1;
+let filteredSitesForView: Site[] = [];
+
+type SortKey = "name" | "owner" | "product" | "status" | "csat" | "monthlyRevenue" | "created";
+type SortDir = "asc" | "desc";
+
+const SORT_LABELS: Record<SortKey, string> = {
+  name: "Site name",
+  owner: "Owner",
+  product: "Product",
+  status: "Status",
+  csat: "CSAT",
+  monthlyRevenue: "Monthly revenue",
+  created: "Created date",
+};
+
+/** Default: newest created first (matches previous behavior). */
+let sortKey: SortKey = "created";
+let sortDir: SortDir = "desc";
+
 // Render summary cards
 function calculateStats(filteredSites: Site[]): SiteStats {
   const totalSites = filteredSites.length;
@@ -173,21 +194,7 @@ function renderTable(filteredSites: Site[]) {
   tbody.replaceChildren(fragment);
 }
 
-// Populate product filter dropdown
-function populateProductFilter() {
-  const select = document.getElementById("filter-product");
-  if (!select) return;
-  const products = [...new Set(sites.map((s) => s.product))].sort();
-  products.forEach((product) => {
-    const option = document.createElement("option");
-    option.value = product;
-    option.textContent = product;
-    select.appendChild(option);
-  });
-}
-
-// Filter and re-render
-function applyFilters() {
+function getFilteredSites(): Site[] {
   const searchInput = document.getElementById("search") as HTMLInputElement | null;
   const productSelect = document.getElementById("filter-product") as HTMLSelectElement | null;
   const statusSelect = document.getElementById("filter-status") as HTMLSelectElement | null;
@@ -215,9 +222,216 @@ function applyFilters() {
     filtered = filtered.filter((s) => s.status === statusFilter);
   }
 
-  const stats = calculateStats(filtered);
+  return filtered;
+}
+
+function compareSites(a: Site, b: Site, key: SortKey, dir: SortDir): number {
+  const mult = dir === "asc" ? 1 : -1;
+
+  switch (key) {
+    case "name":
+      return mult * a.name.localeCompare(b.name, undefined, { sensitivity: "base" });
+    case "owner":
+      return mult * a.owner.localeCompare(b.owner, undefined, { sensitivity: "base" });
+    case "product":
+      return mult * a.product.localeCompare(b.product, undefined, { sensitivity: "base" });
+    case "status":
+      return mult * a.status.localeCompare(b.status, undefined, { sensitivity: "base" });
+    case "csat": {
+      const aNull = a.csat === null;
+      const bNull = b.csat === null;
+      if (aNull && bNull) return 0;
+      if (aNull) return 1;
+      if (bNull) return -1;
+      return mult * ((a.csat as number) - (b.csat as number));
+    }
+    case "monthlyRevenue":
+      return mult * (a.monthlyRevenue - b.monthlyRevenue);
+    case "created":
+      return mult * a.created.localeCompare(b.created);
+    default:
+      return 0;
+  }
+}
+
+function sortSitesList(list: Site[]): Site[] {
+  const sorted = [...list];
+  sorted.sort((a, b) => compareSites(a, b, sortKey, sortDir));
+  return sorted;
+}
+
+function updateSortHeaderUI(): void {
+  document.querySelectorAll<HTMLButtonElement>(".sort-header").forEach((btn) => {
+    const key = btn.dataset.sort as SortKey | undefined;
+    if (!key) return;
+
+    const th = btn.closest("th");
+    const indicator = btn.querySelector(".sort-indicator");
+    const label = SORT_LABELS[key];
+
+    if (sortKey === key) {
+      th?.setAttribute("aria-sort", sortDir === "asc" ? "ascending" : "descending");
+      if (indicator) indicator.textContent = sortDir === "asc" ? "\u2191" : "\u2193";
+      btn.setAttribute("aria-label", `${label}, sorted ${sortDir === "asc" ? "ascending" : "descending"}`);
+    } else {
+      th?.removeAttribute("aria-sort");
+      if (indicator) indicator.textContent = "\u2195";
+      btn.setAttribute("aria-label", `Sort by ${label}`);
+    }
+  });
+}
+
+function getPageSlots(current: number, total: number): (number | "gap")[] {
+  if (total <= 1) return [1];
+  if (total <= 9) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+  const set = new Set<number>();
+  set.add(1);
+  set.add(total);
+  for (let d = -2; d <= 2; d++) {
+    const p = current + d;
+    if (p >= 1 && p <= total) set.add(p);
+  }
+  const sorted = [...set].sort((a, b) => a - b);
+  const out: (number | "gap")[] = [];
+  let prev = 0;
+  for (const p of sorted) {
+    if (prev > 0 && p - prev > 1) out.push("gap");
+    out.push(p);
+    prev = p;
+  }
+  return out;
+}
+
+function buildPaginationBar(totalItems: number, totalPages: number): HTMLElement {
+  const bar = document.createElement("div");
+  bar.className = "table-pagination";
+
+  const meta = document.createElement("div");
+  meta.className = "table-pagination-meta";
+  const start = totalItems === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+  const end = Math.min(currentPage * PAGE_SIZE, totalItems);
+  meta.innerHTML =
+    totalItems === 0
+      ? "<strong>0</strong> sites"
+      : `Showing <strong>${start}</strong>–<strong>${end}</strong> of <strong>${totalItems}</strong> <span class="sr-only">sites, </span>(page ${currentPage} of ${totalPages})`;
+
+  const actions = document.createElement("div");
+  actions.className = "table-pagination-actions";
+
+  const onFirst = currentPage <= 1;
+  const onLast = currentPage >= totalPages;
+
+  const firstBtn = document.createElement("button");
+  firstBtn.type = "button";
+  firstBtn.className = "page-nav-btn";
+  firstBtn.textContent = "First";
+  firstBtn.setAttribute("data-page-action", "first");
+  firstBtn.disabled = onFirst;
+  firstBtn.setAttribute("aria-label", "First page");
+
+  const prevBtn = document.createElement("button");
+  prevBtn.type = "button";
+  prevBtn.className = "page-nav-btn";
+  prevBtn.textContent = "Previous";
+  prevBtn.setAttribute("data-page-action", "prev");
+  prevBtn.disabled = onFirst;
+  prevBtn.setAttribute("aria-label", "Previous page");
+
+  const slots = getPageSlots(currentPage, totalPages);
+  for (const slot of slots) {
+    if (slot === "gap") {
+      const ell = document.createElement("span");
+      ell.className = "page-ellipsis";
+      ell.textContent = "\u2026";
+      ell.setAttribute("aria-hidden", "true");
+      actions.appendChild(ell);
+      continue;
+    }
+    const numBtn = document.createElement("button");
+    numBtn.type = "button";
+    numBtn.className = "page-num-btn";
+    numBtn.textContent = String(slot);
+    numBtn.setAttribute("data-page-action", "page");
+    numBtn.setAttribute("data-page", String(slot));
+    numBtn.setAttribute("aria-label", `Page ${slot}`);
+    if (slot === currentPage) {
+      numBtn.setAttribute("aria-current", "page");
+    }
+    actions.appendChild(numBtn);
+  }
+
+  const nextBtn = document.createElement("button");
+  nextBtn.type = "button";
+  nextBtn.className = "page-nav-btn";
+  nextBtn.textContent = "Next";
+  nextBtn.setAttribute("data-page-action", "next");
+  nextBtn.disabled = onLast;
+  nextBtn.setAttribute("aria-label", "Next page");
+
+  const lastBtn = document.createElement("button");
+  lastBtn.type = "button";
+  lastBtn.className = "page-nav-btn";
+  lastBtn.textContent = "Last";
+  lastBtn.setAttribute("data-page-action", "last");
+  lastBtn.disabled = onLast;
+  lastBtn.setAttribute("aria-label", "Last page");
+
+  actions.prepend(prevBtn);
+  actions.prepend(firstBtn);
+  actions.appendChild(nextBtn);
+  actions.appendChild(lastBtn);
+
+  bar.appendChild(meta);
+  bar.appendChild(actions);
+  return bar;
+}
+
+function renderPaginationBars(totalItems: number, totalPages: number): void {
+  const top = document.getElementById("pagination-top");
+  const bottom = document.getElementById("pagination-bottom");
+  const bar = buildPaginationBar(totalItems, totalPages);
+  const barClone = bar.cloneNode(true) as HTMLElement;
+  top?.replaceChildren(bar);
+  bottom?.replaceChildren(barClone);
+}
+
+function paginateAndRender(): void {
+  const totalItems = filteredSitesForView.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
+  if (currentPage > totalPages) currentPage = totalPages;
+  if (currentPage < 1) currentPage = 1;
+
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageRows = filteredSitesForView.slice(start, start + PAGE_SIZE);
+
+  renderTable(pageRows);
+  renderPaginationBars(totalItems, totalPages);
+  updateSortHeaderUI();
+}
+
+// Populate product filter dropdown
+function populateProductFilter() {
+  const select = document.getElementById("filter-product");
+  if (!select) return;
+  const products = [...new Set(sites.map((s) => s.product))].sort();
+  products.forEach((product) => {
+    const option = document.createElement("option");
+    option.value = product;
+    option.textContent = product;
+    select.appendChild(option);
+  });
+}
+
+// Filter and re-render
+function applyFilters(resetPage = true) {
+  filteredSitesForView = sortSitesList(getFilteredSites());
+  if (resetPage) currentPage = 1;
+
+  const stats = calculateStats(filteredSitesForView);
   renderSummary(stats);
-  renderTable(filtered);
+  paginateAndRender();
 }
 
 // Debounce helper
@@ -235,6 +449,45 @@ applyFilters();
 trackPageView("dashboard");
 
 // Event listeners
-document.getElementById("search")?.addEventListener("input", debounce(applyFilters, 180));
-document.getElementById("filter-product")?.addEventListener("change", applyFilters);
-document.getElementById("filter-status")?.addEventListener("change", applyFilters);
+document.getElementById("search")?.addEventListener("input", debounce(() => applyFilters(), 180));
+document.getElementById("filter-product")?.addEventListener("change", () => applyFilters());
+document.getElementById("filter-status")?.addEventListener("change", () => applyFilters());
+
+document.getElementById("sites-table")?.addEventListener("click", (e) => {
+  const sortBtn = (e.target as HTMLElement).closest("button.sort-header") as HTMLButtonElement | null;
+  if (sortBtn?.dataset.sort) {
+    const key = sortBtn.dataset.sort as SortKey;
+    if (sortKey === key) {
+      sortDir = sortDir === "asc" ? "desc" : "asc";
+    } else {
+      sortKey = key;
+      sortDir = "asc";
+    }
+    applyFilters(true);
+    return;
+  }
+
+  const target = (e.target as HTMLElement).closest("[data-page-action]");
+  if (!target) return;
+
+  const action = target.getAttribute("data-page-action");
+  const totalPages = Math.max(1, Math.ceil(filteredSitesForView.length / PAGE_SIZE));
+
+  if (action === "first") {
+    currentPage = 1;
+  } else if (action === "prev") {
+    currentPage = Math.max(1, currentPage - 1);
+  } else if (action === "next") {
+    currentPage = Math.min(totalPages, currentPage + 1);
+  } else if (action === "last") {
+    currentPage = totalPages;
+  } else if (action === "page") {
+    const n = Number((target as HTMLElement).getAttribute("data-page"));
+    if (!Number.isFinite(n) || n < 1 || n > totalPages) return;
+    currentPage = n;
+  } else {
+    return;
+  }
+
+  paginateAndRender();
+});
