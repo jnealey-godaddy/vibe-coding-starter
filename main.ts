@@ -82,7 +82,7 @@ function renderSummary(stats: SiteStats) {
   const csatHint = stats.avgCsat >= 5 ? " (good)" : " (needs attention)";
 
   container.replaceChildren(
-    createSummaryCard("Total Sites", String(stats.totalSites), "blue"),
+    createSummaryCard("sites", String(stats.totalSites), "blue"),
     createSummaryCard("Active Sites", String(stats.activeSites), "green"),
     createSummaryCard("Monthly Revenue", `$${stats.totalRevenue.toFixed(2)}`, "green"),
     createSummaryCard("Avg CSAT (out of 7)", stats.avgCsat.toFixed(1), csatColor, csatHint),
